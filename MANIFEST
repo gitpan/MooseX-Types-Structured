@@ -27,3 +27,4 @@ t/04-combined.t
 t/05-advanced.t
 t/06-api.t
 t/07-coerce.t
+t/08-examples.t
