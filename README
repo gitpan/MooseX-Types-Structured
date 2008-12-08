@@ -5,19 +5,36 @@ SYNOPSIS
     The following is example usage for this module.
 
         package MyApp::MyClass;
-            
-    use Moose;
+        
+        use Moose;
         use MooseX::Types::Moose qw(Str Int);
-        use MooseX::Types::Structured qw(Dict Tuple);
+        use MooseX::Types::Structured qw(Dict Optional);
 
-        has name => (isa=>Dict[first_name=>Str, last_name=>Str]);
+        ## A name has a first and last part, but middle names are not required
+        has name => (
+            isa=>Dict[
+                first=>Str,
+                last=>Str,
+                middle=>Optional[Str],
+            ],
+        );
 
     Then you can instantiate this class with something like:
 
-        my $instance = MyApp::MyClass->new(
+        my $john = MyApp::MyClass->new(
             name => {
-                first_name=>'John', 
-                last_name=>'Napiorkowski',
+                first=>'John',
+                middle=>'James'
+                last=>'Napiorkowski',
+            },
+        );
+
+    Or with:
+
+        my $vanessa = MyApp::MyClass->new(
+            name => {
+                first=>'Vanessa',
+                last=>'Li'
             },
         );
 
@@ -27,59 +44,99 @@ SYNOPSIS
         MyApp::MyClass->new( name=>'John' );
         MyApp::MyClass->new( name=>{first_name=>'John'} );
         MyApp::MyClass->new( name=>{first_name=>'John', age=>39} );
-
+        MyApp::MyClass->new( name=>{first=>'Vanessa', middle=>[1,2], last=>'Li'} );
+    
     Please see the test cases for more examples.
 
 DESCRIPTION
-    A structured type constraint is a standard container "Moose" type
+    A structured type constraint is a standard container Moose type
     constraint, such as an arrayref or hashref, which has been enhanced to
     allow you to explicitly name all the allow type constraints inside the
     structure. The generalized form is:
 
-        TypeConstraint[TypeParameters]
+        TypeConstraint[@TypeParameters|%TypeParameters]
 
     Where 'TypeParameters' is an array or hash of
-    "Moose::Meta::TypeConstraint" type constraints.
+    Moose::Meta::TypeConstraint.
 
-    This type library enables structured type constraints. It is build on
+    This type library enables structured type constraints. It is built on
     top of the MooseX::Types library system, so you should review the
     documentation for that if you are not familiar with it.
 
   Comparing Parameterized types to Structured types
-    Parameterized constraints are built into the core Moose types 'HashRef'
-    and 'ArrayRef'. Structured types have similar functionality, so their
-    syntax is likewise similar. For example, you could define a
-    parameterized constraint like:
+    Parameterized constraints are built into core Moose and you are probably
+    already familuar with the type constraints 'HashRef' and 'ArrayRef'.
+    Structured types have similar functionality, so their syntax is likewise
+    similar. For example, you could define a parameterized constraint like:
 
         subtype ArrayOfInts,
          as Arrayref[Int];
 
     which would constraint a value to something like [1,2,3,...] and so on.
     On the other hand, a structured type constraint explicitly names all
-    it's allowed type parameter constraints. For the example:
+    it's allowed 'internal' type parameter constraints. For the example:
 
         subtype StringFollowedByInt,
          as Tuple[Str,Int];
-
+        
     would constrain it's value to something like ['hello', 111] but
     ['hello', 'world'] would fail, as well as ['hello', 111, 'world'] and so
-    on.
+    on. Here's another example:
+
+        subtype StringIntOptionalHashRef,
+         as Tuple[
+            Str, Int,
+            Optional[HashRef]
+         ];
+     
+    This defines a type constraint that validates values like:
+
+        ['Hello', 100, {key1=>'value1', key2=>'value2'}];
+        ['World', 200];
+    
+    Notice that the last type constraint in the structure is optional. This
+    is enabled via the helper Optional type constraint, which is a variation
+    of the core Moose type constraint Maybe. The main difference is that
+    Optional type constraints are required to validate if they exist, while
+    Maybe permits undefined values. So the following example would not
+    validate:
+
+        StringIntOptionalHashRef->validate(['Hello Undefined', 1000, undef]);
+    
+    Please note the subtle difference between undefined and null. If you
+    wish to allow both null and undefined, you should use the core Moose
+    Maybe type constraint instead:
+
+        use MooseX::Types -declare [qw(StringIntOptionalHashRef)];
+        use MooseX::Types::Moose qw(Maybe);
+        use MooseX::Types::Structured qw(Tuple);
+
+        subtype StringIntOptionalHashRef,
+         as Tuple[
+            Str, Int, Maybe[HashRef]
+         ];
+
+    This would validate the following:
+
+        ['Hello', 100, {key1=>'value1', key2=>'value2'}];
+        ['World', 200, undef];    
+        ['World', 200];
 
     Structured Constraints are not limited to arrays. You can define a
     structure against a hashref with 'Dict' as in this example:
 
         subtype FirstNameLastName,
-         as Dict[firste=>Str, lastname=>Str];
+         as Dict[firstname=>Str, lastname=>Str];
 
     This would constrain a hashref to something like:
 
         {firstname=>'Vanessa', lastname=>'Li'};
-
+    
     but all the following would fail validation:
 
          {first=>'Vanessa', last=>'Li'};
          {firstname=>'Vanessa', lastname=>'Li', middlename=>'NA'};   
-         ['Vanessa', 'Li'];
+         ['Vanessa', 'Li']; 
 
     These structures can be as simple or elaborate as you wish. You can even
     combine various structured, parameterized and simple constraints all
@@ -91,7 +148,7 @@ DESCRIPTION
             Dict[name=>Str, age=>Int],
             ArrayRef[Int]
          ];
-
+        
     Which would match "[1, {name=>'John', age=>25},[10,11,12]]". Please
     notice how the type parameters can be visually arranged to your liking
     and to improve the clarity of your meaning. You don't need to run then
@@ -104,50 +161,73 @@ DESCRIPTION
 
         package MyApp::MyStruct;
         use Moose;
-        
-    has $_ for qw(name age);
-        
-    package MyApp::MyClass;
+    
+        has $_ for qw(full_name age_in_years);
+    
+        package MyApp::MyClass;
         use Moose;
-        
-    has person => (isa=>'MyApp::MyStruct');             
-        
-    my $instance = MyApp::MyClass->new(
-            person=>MyApp::MyStruct->new(name=>'John', age=>39),
+    
+        has person => (isa=>'MyApp::MyStruct');             
+    
+        my $instance = MyApp::MyClass->new(
+            person=>MyApp::MyStruct->new(full_name=>'John', age_in_years=>39),
         );
-
+        
     This method may take some additional time to setup but will give you
     more flexibility. However, structured constraints are highly compatible
     with this method, granting some interesting possibilities for coercion.
     Try:
 
-        subtype 'MyStruct',
+        use MyApp::MyStruct;
+        use MooseX::Types::DateTime qw(DateTime);
+        use MooseX::Types -declare [qw(MyStruct)];
+        use MooseX::Types::Moose qw(Str Int);
+        use MooseX::Types::Structured qw(Dict);
+
+        ## Use class_type to create an ISA type constraint if your object doesn't
+        ## inherit from Moose::Object.
+        class_type 'MyApp::MyStruct';
+
+        ## Just a shorter version really.
+        subtype MyStruct,
          as 'MyApp::MyStruct';
-        
-    coerce 'MyStruct',
-         from (Dict[name=>Str, age=>Int]),
-         via { MyApp::MyStruct->new(%$_) },
-         from (Dict[last_name=>Str, first_name=>Str, dob=>DateTime]),
-         via {
-            my $name = $_->{first_name} .' '. $_->{last_name};
+    
+        ## Add the coercions.
+        coerce MyStruct,
+         from Dict[
+            full_name=>Str,
+            age_in_years=>Int
+         ], via {
+            MyApp::MyStruct->new(%$_);
+         },
+         from Dict[
+            lastname=>Str,
+            firstname=>Str,
+            dob=>DateTime
+         ], via {
+            my $name = $_->{firstname} .' '. $_->{lastname};
             my $age = DateTime->now - $_->{dob};
-            MyApp::MyStruct->new( name=>$name, age=>$age->years );
+            MyApp::MyStruct->new( full_name=>$name, age_in_years=>$age->years );
          };
 
-  Subtyping a structured subtype
+    If you are not familiar with how coercions work, check out the Moose
+    cookbook entry Moose::Cookbook::Recipe5 for an explanation. The section
+    "Coercions" has additional examples and discussion.
+
+  Subtyping a Structured type constraint
     You need to exercise some care when you try to subtype a structured type
     as in this example:
 
         subtype Person,
          as Dict[name=>Str, age=>Int];
-             
-    subtype FriendlyPerson,
+         
+        subtype FriendlyPerson,
          as Person[name=>Str, age=>Int, totalFriends=>Int];
-
+         
     This will actually work BUT you have to take care that the subtype has a
     structure that does not contradict the structure of it's parent. For now
     the above works, but I will clarify the syntax for this at a future
-    point, so it's recommended to avoid (should not realy be needed so much
+    point, so it's recommended to avoid (should not really be needed so much
     anyway). For now this is supported in an EXPERIMENTAL way. Your
     thoughts, test cases and patches are welcomed for discussion.
 
@@ -156,11 +236,11 @@ DESCRIPTION
 
         subtype Person,
          as Dict[name=>Str, age=>Int];
-        
-    subtype Fullname,
+    
+        subtype Fullname,
          as Dict[first=>Str, last=>Str];
-        
-    coerce Person,
+    
+        coerce Person,
          ## Coerce an object of a particular class
          from BlessedPersonObject,
          via { +{name=>$_->name, age=>$_->age} },
@@ -176,12 +256,14 @@ DESCRIPTION
                 age=>$age->years
             }
          };
-
+         
     And that should just work as expected. However, if there are any 'inner'
     coercions, such as a coercion on 'Fullname' or on 'DateTime', that
     coercion won't currently get activated.
 
     Please see the test '07-coerce.t' for a more detailed example.
+    Discussion on extending coercions to support this welcome on the Moose
+    development channel or mailing list.
 
 TYPE CONSTRAINTS
     This type library defines the following constraints.
@@ -193,12 +275,35 @@ TYPE CONSTRAINTS
         Tuple[Int,Str]; ## Validates [1,'hello']
         Tuple[Str|Object, Int]; ##Validates ['hello', 1] or [$object, 2]
 
-  Dict [%constraints]
+  Dict[%constraints]
     This defines a hashref based constraint which allowed you to validate a
     specific hashref. For example:
 
         Dict[name=>Str, age=>Int]; ## Validates {name=>'John', age=>39}
 
+  Optional[$constraint]
+    This is primarily a helper constraint for Dict and Tuple type
+    constraints. What this allows if for you to assert that a given type
+    constraint is allowed to be null (but NOT undefined). If the value is
+    null, then the type constraint passes but if the value is defined it
+    must validate against the type constraint. This makes it easy to make a
+    Dict where one or more of the keys doesn't have to exist or a tuple
+    where some of the values are not required. For example:
+
+        subtype Name() => as Dict[
+            first=>Str,
+            last=>Str,
+            middle=>Optional[Str],
+        ];
+        
+    Creates a constraint that validates against a hashref with the keys
+    'first' and 'last' being strings and required while an optional key
+    'middle' is must be a string if it appears but doesn't have to appear.
+    So in this case both the following are valid:
+
+        {first=>'John', middle=>'James', last=>'Napiorkowski'}
+        {first=>'Vanessa', last=>'Li'}
+    
 EXAMPLES
     Here are some additional example usage for structured types. All
     examples can be found also in the 't/examples.t' test. Your
@@ -211,19 +316,19 @@ EXAMPLES
     structured types mixed which other MooseX::Types libraries.
 
         package Test::MooseX::Meta::TypeConstraint::Structured::Examples::Normalize;
-        
-    use Moose;
+    
+        use Moose;
         use DateTime;
-        
-    use MooseX::Types::Structured qw(Dict Tuple);
+    
+        use MooseX::Types::Structured qw(Dict Tuple);
         use MooseX::Types::DateTime qw(DateTime);
         use MooseX::Types::Moose qw(Int Str Object);
         use MooseX::Types -declare => [qw(Name Age Person)];
-         
-    subtype Person,
+     
+        subtype Person,
          as Dict[name=>Str, age=>Int];
-        
-    coerce Person,
+    
+        coerce Person,
          from Dict[first=>Str, last=>Str, years=>Int],
          via { +{
             name => "$_->{first} $_->{last}",
@@ -234,13 +339,13 @@ EXAMPLES
             name => "$_->{fullname}{first} $_->{fullname}{last}",
             age => ($_->{dob} - 'DateTime'->now)->years,
          }};
-         
-    has person => (is=>'rw', isa=>Person, coerce=>1);
+     
+        has person => (is=>'rw', isa=>Person, coerce=>1);
 
 SEE ALSO
     The following modules or resources may be of interest.
 
-    Moose, MooseX::TypeLibrary, Moose::Meta::TypeConstraint,
+    Moose, MooseX::Types, Moose::Meta::TypeConstraint,
     MooseX::Meta::TypeConstraint::Structured
 
 TODO
