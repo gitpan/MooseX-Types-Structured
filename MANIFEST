@@ -3,8 +3,13 @@ inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
 inc/Module/Install/Base.pm
+inc/Module/Install/Can.pm
+inc/Module/Install/Fetch.pm
 inc/Module/Install/Include.pm
+inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
+inc/Module/Install/Win32.pm
+inc/Module/Install/WriteAll.pm
 lib/MooseX/Meta/TypeCoercion/Structured.pm
 lib/MooseX/Meta/TypeConstraint/Structured.pm
 lib/MooseX/Types/Structured.pm
@@ -24,3 +29,4 @@ t/06-api.t
 t/07-coerce.t
 t/08-examples.t
 t/09-optional.t
+t/10-recursion.t
