@@ -30,3 +30,5 @@ t/07-coerce.t
 t/08-examples.t
 t/09-optional.t
 t/10-recursion.t
+t/11-overflow.t
+t/12-error.t
