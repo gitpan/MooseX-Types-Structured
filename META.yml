@@ -24,4 +24,4 @@ requires:
   MooseX::Types: 0.08
   Sub::Exporter: 0.982
   perl: 5.8.0
-version: 0.10
+version: 0.11
