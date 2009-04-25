@@ -75,7 +75,7 @@ SYNOPSIS
             first => 'Vanessa',
             middle => [1,2],
             last => 'Li',
-        }); 
+        });
 
     And these would cause a constraint error for the 'description'
     attribute:
@@ -121,7 +121,7 @@ DESCRIPTION
 
         subtype StringFollowedByInt,
          as Tuple[Str,Int];
-        
+
     would constrain it's value to things like ['hello', 111] but ['hello',
     'world'] would fail, as well as ['hello', 111, 'world'] and so on.
     Here's another example:
@@ -131,12 +131,12 @@ DESCRIPTION
             Str, Int,
             Optional[HashRef]
          ];
-     
+
     This defines a type constraint that validates values like:
 
         ['Hello', 100, {key1 => 'value1', key2 => 'value2'}];
         ['World', 200];
-    
+
     Notice that the last type constraint in the structure is optional. This
     is enabled via the helper Optional type constraint, which is a variation
     of the core Moose type constraint 'Maybe'. The main difference is that
@@ -145,7 +145,7 @@ DESCRIPTION
     validate:
 
         StringIntOptionalHashRef->validate(['Hello Undefined', 1000, undef]);
-    
+
     Please note the subtle difference between undefined and null. If you
     wish to allow both null and undefined, you should use the core Moose
     'Maybe' type constraint instead:
@@ -177,7 +177,7 @@ DESCRIPTION
     This would constrain a HashRef to something like:
 
         {firstname => 'Christopher', lastname= > 'Parsons'};
-    
+
     but all the following would fail validation:
 
         ## Incorrect keys
@@ -187,7 +187,7 @@ DESCRIPTION
         {firstname => 'Christopher', lastname => 'Parsons', middlename => 'Allen'};
     
         ## Not a HashRef
-        ['Christopher', 'Christopher']; 
+        ['Christopher', 'Christopher'];
 
     These structures can be as simple or elaborate as you wish. You can even
     combine various structured, parameterized and simple constraints all
@@ -199,7 +199,7 @@ DESCRIPTION
             Dict[name=>Str, age=>Int],
             ArrayRef[Int]
          ];
-        
+
     Which would match "[1, {name=>'John', age=>25},[10,11,12]]". Please
     notice how the type parameters can be visually arranged to your liking
     and to improve the clarity of your meaning. You don't need to run then
@@ -227,7 +227,7 @@ DESCRIPTION
                 age_in_years => 39,
             ),
         );
-        
+
     This method may take some additional time to setup but will give you
     more flexibility. However, structured constraints are highly compatible
     with this method, granting some interesting possibilities for coercion.
@@ -276,15 +276,15 @@ DESCRIPTION
             );
          };
      
-        has person => (isa=>MyStruct);      
-     
+        has person => (isa=>MyStruct);
+
     This would allow you to instantiate with something like:
 
         my $obj = MyApp::MyClass->new( person => {
             full_name=>'John Napiorkowski',
             age_in_years=>39,
         });
-    
+
     Or even:
 
         my $obj = MyApp::MyClass->new( person => {
@@ -309,7 +309,7 @@ DESCRIPTION
             name => Str,
             total_friends => Int,
          ];
-         
+
     This will actually work BUT you have to take care that the subtype has a
     structure that does not contradict the structure of it's parent. For now
     the above works, but I will clarify the syntax for this at a future
@@ -359,7 +359,7 @@ DESCRIPTION
                 age =>$age->years
             }
          };
-         
+
     And that should just work as expected. However, if there are any 'inner'
     coercions, such as a coercion on 'Fullname' or on 'DateTime', that
     coercion won't currently get activated.
@@ -380,7 +380,7 @@ DESCRIPTION
                             ArrayRef[Person]
                     ],
              ];
-         
+
     This would declare a Person subtype that contains a name and an optional
     ArrayRef of Persons who are friends as in:
 
@@ -407,7 +407,7 @@ DESCRIPTION
                     Str,
                     Str|Tuple,
              ];
-         
+
     Which validates:
 
             [
@@ -456,7 +456,7 @@ TYPE CONSTRAINTS
             last=>Str,
             middle=>Optional[Str],
         ];
-        
+
     Creates a constraint that validates against a hashref with the keys
     'first' and 'last' being strings and required while an optional key
     'middle' is must be a string if it appears but doesn't have to appear.
@@ -506,7 +506,7 @@ EXPORTABLE SUBROUTINES
     This will now work as expected, validating ArrayRef structures such as:
 
         [1,"hello", $obj, 2,3,4,5,6,...]
-    
+
     A few caveats apply. First, the slurpy type constraint must be the last
     one in the list of type constraint parameters. Second, the parent type
     of the slurpy type constraint must match that of the containing type
@@ -590,7 +590,7 @@ EXAMPLES
          }};
      
         has person => (is=>'rw', isa=>Person, coerce=>1);
-    
+
     And now you can instantiate with all the following:
 
         __PACKAGE__->new(
@@ -621,7 +621,7 @@ EXAMPLES
                 ),            
             },
         );
-    
+
     This technique is a way to support various ways to instantiate your
     class in a clean and declarative way.
 
