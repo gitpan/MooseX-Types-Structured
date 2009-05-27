@@ -115,8 +115,6 @@ sub import {
         )[0]
     );
 
-    $UnderCPAN = _check_lock(1);    # check for $UnderCPAN
-
     while ( my ( $feature, $modules ) = splice( @args, 0, 2 ) ) {
         my ( @required, @tests, @skiptests );
         my $default  = 1;
@@ -186,7 +184,7 @@ sub import {
             !$SkipInstall
             and (
                 $CheckOnly
-                or ($mandatory and $UnderCPAN)
+                or ($mandatory and $ENV{PERL5_CPANPLUS_IS_RUNNING})
                 or _prompt(
                     qq{==> Auto-install the }
                       . ( @required / 2 )
@@ -217,6 +215,8 @@ sub import {
         }
     }
 
+    $UnderCPAN = _check_lock();    # check for $UnderCPAN
+
     if ( @Missing and not( $CheckOnly or $UnderCPAN ) ) {
         require Config;
         print
@@ -238,7 +238,7 @@ sub import {
 # Check to see if we are currently running under CPAN.pm and/or CPANPLUS;
 # if we are, then we simply let it taking care of our dependencies
 sub _check_lock {
-    return unless @Missing or @_;
+    return unless @Missing;
 
     if ($ENV{PERL5_CPANPLUS_IS_RUNNING}) {
         print <<'END_MESSAGE';
@@ -314,7 +314,7 @@ sub install {
         @modules = @newmod;
     }
 
-    if ( _has_cpanplus() and not $ENV{PERL_AUTOINSTALL_PREFER_CPAN} ) {
+    if ( _has_cpanplus() ) {
         _install_cpanplus( \@modules, \@config );
     } else {
         _install_cpan( \@modules, \@config );
@@ -707,7 +707,7 @@ sub _make_args {
       if $Config;
 
     $PostambleActions = (
-        ($missing and not $UnderCPAN)
+        $missing
         ? "\$(PERL) $0 --config=$config --installdeps=$missing"
         : "\$(NOECHO) \$(NOOP)"
     );
@@ -747,7 +747,7 @@ sub Write {
 sub postamble {
     $PostambleUsed = 1;
 
-    return <<"END_MAKE";
+    return << ".";
 
 config :: installdeps
 \t\$(NOECHO) \$(NOOP)
@@ -758,7 +758,7 @@ checkdeps ::
 installdeps ::
 \t$PostambleActions
 
-END_MAKE
+.
 
 }
 
