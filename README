@@ -27,6 +27,8 @@ SYNOPSIS
          ],
         );
 
+            ## Remainder of your class attributes and methods
+
     Then you can instantiate this class with something like:
 
         my $john = Person->new(
@@ -75,7 +77,7 @@ SYNOPSIS
             first => 'Vanessa',
             middle => [1,2],
             last => 'Li',
-        });
+        }); 
 
     And these would cause a constraint error for the 'description'
     attribute:
@@ -121,22 +123,28 @@ DESCRIPTION
 
         subtype StringFollowedByInt,
          as Tuple[Str,Int];
-
+        
     would constrain it's value to things like ['hello', 111] but ['hello',
     'world'] would fail, as well as ['hello', 111, 'world'] and so on.
     Here's another example:
+
+            package MyApp::Types;
+
+        use MooseX::Types -declare [qw(StringIntOptionalHashRef)];
+        use MooseX::Types::Moose qw(Str Int);
+            use MooseX::Types::Structured qw(Tuple Optional);
 
         subtype StringIntOptionalHashRef,
          as Tuple[
             Str, Int,
             Optional[HashRef]
          ];
-
+     
     This defines a type constraint that validates values like:
 
         ['Hello', 100, {key1 => 'value1', key2 => 'value2'}];
         ['World', 200];
-
+    
     Notice that the last type constraint in the structure is optional. This
     is enabled via the helper Optional type constraint, which is a variation
     of the core Moose type constraint 'Maybe'. The main difference is that
@@ -145,13 +153,15 @@ DESCRIPTION
     validate:
 
         StringIntOptionalHashRef->validate(['Hello Undefined', 1000, undef]);
-
+    
     Please note the subtle difference between undefined and null. If you
     wish to allow both null and undefined, you should use the core Moose
     'Maybe' type constraint instead:
 
+            package MyApp::Types;
+
         use MooseX::Types -declare [qw(StringIntMaybeHashRef)];
-        use MooseX::Types::Moose qw(Maybe);
+        use MooseX::Types::Moose qw(Str Int Maybe);
         use MooseX::Types::Structured qw(Tuple);
 
         subtype StringIntMaybeHashRef,
@@ -166,7 +176,8 @@ DESCRIPTION
         ['World', 200];
 
     Structured constraints are not limited to arrays. You can define a
-    structure against a HashRef with 'Dict' as in this example:
+    structure against a HashRef with the 'Dict' type constaint as in this
+    example:
 
         subtype FirstNameLastName,
          as Dict[
@@ -174,10 +185,10 @@ DESCRIPTION
             lastname => Str,
          ];
 
-    This would constrain a HashRef to something like:
+    This would constrain a HashRef that validates something like:
 
-        {firstname => 'Christopher', lastname= > 'Parsons'};
-
+        {firstname => 'Christopher', lastname => 'Parsons'};
+    
     but all the following would fail validation:
 
         ## Incorrect keys
@@ -187,7 +198,7 @@ DESCRIPTION
         {firstname => 'Christopher', lastname => 'Parsons', middlename => 'Allen'};
     
         ## Not a HashRef
-        ['Christopher', 'Christopher'];
+        ['Christopher', 'Parsons']; 
 
     These structures can be as simple or elaborate as you wish. You can even
     combine various structured, parameterized and simple constraints all
@@ -199,11 +210,31 @@ DESCRIPTION
             Dict[name=>Str, age=>Int],
             ArrayRef[Int]
          ];
+        
+    Which would match:
 
-    Which would match "[1, {name=>'John', age=>25},[10,11,12]]". Please
-    notice how the type parameters can be visually arranged to your liking
-    and to improve the clarity of your meaning. You don't need to run then
-    altogether onto a single line.
+            [1, {name=>'John', age=>25},[10,11,12]];
+
+    Please notice how the type parameters can be visually arranged to your
+    liking and to improve the clarity of your meaning. You don't need to run
+    then altogether onto a single line. Additionally, since the 'Dict' type
+    constraint defines a hash constraint, the key order is not meaningful.
+    For example:
+
+            subtype AnyKeyOrder,
+             as Dict[
+                    key1=>Int,
+                    key2=>Str,
+                    key3=>Int,
+             ];
+
+    Would validate both:
+
+            {key1 => 1, key2 => "Hi!", key3 => 2};
+            {key2 => "Hi!", key1 => 100, key3 => 300};
+
+    As you would expect, since underneath its just a plain old Perl hash at
+    work.
 
   Alternatives
     You should exercise some care as to whether or not your complex
@@ -227,7 +258,7 @@ DESCRIPTION
                 age_in_years => 39,
             ),
         );
-
+        
     This method may take some additional time to setup but will give you
     more flexibility. However, structured constraints are highly compatible
     with this method, granting some interesting possibilities for coercion.
@@ -276,15 +307,15 @@ DESCRIPTION
             );
          };
      
-        has person => (isa=>MyStruct);
-
+        has person => (isa=>MyStruct);      
+     
     This would allow you to instantiate with something like:
 
         my $obj = MyApp::MyClass->new( person => {
             full_name=>'John Napiorkowski',
             age_in_years=>39,
         });
-
+    
     Or even:
 
         my $obj = MyApp::MyClass->new( person => {
@@ -309,7 +340,7 @@ DESCRIPTION
             name => Str,
             total_friends => Int,
          ];
-
+         
     This will actually work BUT you have to take care that the subtype has a
     structure that does not contradict the structure of it's parent. For now
     the above works, but I will clarify the syntax for this at a future
@@ -359,7 +390,7 @@ DESCRIPTION
                 age =>$age->years
             }
          };
-
+         
     And that should just work as expected. However, if there are any 'inner'
     coercions, such as a coercion on 'Fullname' or on 'DateTime', that
     coercion won't currently get activated.
@@ -380,7 +411,7 @@ DESCRIPTION
                             ArrayRef[Person]
                     ],
              ];
-
+         
     This would declare a Person subtype that contains a name and an optional
     ArrayRef of Persons who are friends as in:
 
@@ -407,7 +438,7 @@ DESCRIPTION
                     Str,
                     Str|Tuple,
              ];
-
+         
     Which validates:
 
             [
@@ -436,15 +467,26 @@ TYPE CONSTRAINTS
         Tuple[Int,Str]; ## Validates [1,'hello']
         Tuple[Str|Object, Int]; ## Validates ['hello', 1] or [$object, 2]
 
+    The Values of @constraints should ideally be MooseX::Types declared type
+    constraints. We do support 'old style' Moose string based constraints to
+    a limited degree but these string type constraints are considered
+    deprecated. There will be limited support for bugs resulting from mixing
+    string and MooseX::Types in your structures. If you encounter such a bug
+    and really need it fixed, we will required a detailed test case at the
+    minimum.
+
   Dict[%constraints]
     This defines a HashRef based constraint which allowed you to validate a
     specific hashref. For example:
 
         Dict[name=>Str, age=>Int]; ## Validates {name=>'John', age=>39}
 
+    The keys in %constraints follow the same rules as @constraints in the
+    above section.
+
   Optional[$constraint]
     This is primarily a helper constraint for Dict and Tuple type
-    constraints. What this allows if for you to assert that a given type
+    constraints. What this allows is for you to assert that a given type
     constraint is allowed to be null (but NOT undefined). If the value is
     null, then the type constraint passes but if the value is defined it
     must validate against the type constraint. This makes it easy to make a
@@ -456,7 +498,7 @@ TYPE CONSTRAINTS
             last=>Str,
             middle=>Optional[Str],
         ];
-
+        
     Creates a constraint that validates against a hashref with the keys
     'first' and 'last' being strings and required while an optional key
     'middle' is must be a string if it appears but doesn't have to appear.
@@ -464,6 +506,9 @@ TYPE CONSTRAINTS
 
         {first=>'John', middle=>'James', last=>'Napiorkowski'}
         {first=>'Vanessa', last=>'Li'}
+
+    If you use the 'Maybe' type constraint instead, your values will also
+    validate against 'undef', which may be incorrect for you.
 
 EXPORTABLE SUBROUTINES
     This type library makes available for export the following subroutines
@@ -506,7 +551,7 @@ EXPORTABLE SUBROUTINES
     This will now work as expected, validating ArrayRef structures such as:
 
         [1,"hello", $obj, 2,3,4,5,6,...]
-
+    
     A few caveats apply. First, the slurpy type constraint must be the last
     one in the list of type constraint parameters. Second, the parent type
     of the slurpy type constraint must match that of the containing type
@@ -590,7 +635,7 @@ EXAMPLES
          }};
      
         has person => (is=>'rw', isa=>Person, coerce=>1);
-
+    
     And now you can instantiate with all the following:
 
         __PACKAGE__->new(
@@ -621,7 +666,7 @@ EXAMPLES
                 ),            
             },
         );
-
+    
     This technique is a way to support various ways to instantiate your
     class in a clean and declarative way.
 
@@ -634,18 +679,17 @@ SEE ALSO
 TODO
     Here's a list of stuff I would be happy to get volunteers helping with:
 
-    All POD examples need test cases in t/documentation/*.t Want to break
-    out the examples section to a separate cookbook style POD. Want more
-    examples and best practice / usage guidance for authors Need to clarify
-    deep coercions,
+            * All POD examples need test cases in t/documentation/*.t
+            * Want to break out the examples section to a separate cookbook style POD.
+            * Want more examples and best practice / usage guidance for authors
+            * Need to clarify deep coercions, 
 
 AUTHOR
-    Copyright 2008-2009, John Napiorkowski <jjnapiork@cpan.org>
-
-    John Napiorkowski, "<jjnapiork@cpan.org>"
+    John Napiorkowski "<jjnapiork@cpan.org>"
 
 CONTRIBUTORS
-    The Following people have contributed to this module:
+    The following people have contributed to this module and agree with the
+    listed Copyright & license information included below:
 
         Florian Ragwitz, C<< <rafl@debian.org> >>
         Yuval Kogman, C<< <nothingmuch@woobling.org> >>
