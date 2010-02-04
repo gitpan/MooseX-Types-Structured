@@ -12,7 +12,9 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/MooseX/Meta/TypeCoercion/Structured.pm
+lib/MooseX/Meta/TypeCoercion/Structured/Optional.pm
 lib/MooseX/Meta/TypeConstraint/Structured.pm
+lib/MooseX/Meta/TypeConstraint/Structured/Optional.pm
 lib/MooseX/Types/Structured.pm
 lib/MooseX/Types/Structured/OverflowHandler.pm
 Makefile.PL
@@ -26,6 +28,7 @@ t/01-basic.t
 t/02-tuple.t
 t/03-dict.t
 t/04-combined.t
+t/04-map.t
 t/05-advanced.t
 t/06-api.t
 t/07-coerce.t
@@ -34,3 +37,4 @@ t/09-optional.t
 t/10-recursion.t
 t/11-overflow.t
 t/12-error.t
+t/bug-optional.t

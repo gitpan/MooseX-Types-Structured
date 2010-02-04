@@ -1,5 +1,10 @@
 Revision history for MooseX-Types-Structured
 
+0.20   04 February 2010
+        - Add a new Map type. (Ricardo SIGNES)
+        - Properly handle Optional[] types within Tuples and Dicts.
+          (Florian Ragwitz)
+
 0.19   06 November 2009
         - Require Devel::PartialDump 0.10 and change tests to expect the
           correct format of error.
