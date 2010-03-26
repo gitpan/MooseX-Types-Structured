@@ -267,7 +267,7 @@ sub is_subtype_of {
 
 =head2 type_constraints_equals
 
-Checks to see if the internal type contraints are equal.
+Checks to see if the internal type constraints are equal.
 
 =cut
 

@@ -4,7 +4,6 @@ use Test::More;
 
 use MooseX::Types::Moose qw(Int Num);
 use MooseX::Types::Structured qw(Map);
-use Try::Tiny;
 
 my $type = Map[ Int, Num ];
 
