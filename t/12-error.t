@@ -23,19 +23,19 @@ ok !$simple_dict->check({name=>$simple_dict,age=>'hello'}), "simple_dict fails: 
 ## Let's check all the expected validation errors for tuple
 
 like $simple_tuple->validate({a=>1,b=>2}),
- qr/Validation failed for 'simple_tuple' failed with value { a: 1, b: 2 }/,
+ qr/Validation failed for 'simple_tuple' with value { a: 1, b: 2 }/,
  'Wrong basic type';
 
 like $simple_tuple->validate(['a','b']),
- qr/failed for 'simple_tuple' failed with value \[ "a", "b" \]/,
+ qr/failed for 'simple_tuple' with value \[ "a", "b" \]/,
  'Correctly failed due to "a" not an Int';
  
 like $simple_tuple->validate([1,$simple_tuple]),
- qr/Validation failed for 'simple_tuple' failed with value \[ 1, MooseX::Meta::TypeConstraint::Structured/,
+ qr/Validation failed for 'simple_tuple' with value \[ 1, MooseX::Meta::TypeConstraint::Structured/,
  'Correctly failed due to object not a Str';
 
 like $simple_tuple->validate([1]),
- qr/Validation failed for 'Str' failed with value NULL/,
+ qr/Validation failed for 'Str' with value NULL/,
  'Not enought values';
 
 like $simple_tuple->validate([1,'hello','too many']),
@@ -45,19 +45,19 @@ like $simple_tuple->validate([1,'hello','too many']),
 ## And the same thing for dicts [name=>Str,age=>Int]
 
 like $simple_dict->validate([1,2]),
- qr/ failed with value \[ 1, 2 \]/,
+ qr/ with value \[ 1, 2 \]/,
  'Wrong basic type';
  
 like $simple_dict->validate({name=>'John',age=>'a'}),
- qr/failed for 'Int' failed with value a/,
+ qr/failed for 'Int' with value a/,
  'Correctly failed due to age not an Int';
  
 like $simple_dict->validate({name=>$simple_dict,age=>1}),
- qr/failed with value { age: 1, name: MooseX:/,
+ qr/with value { age: 1, name: MooseX:/,
  'Correctly failed due to object not a Str';
 
 like $simple_dict->validate({name=>'John'}),
- qr/failed for 'Int' failed with value NULL/,
+ qr/failed for 'Int' with value NULL/,
  'Not enought values';
 
 like $simple_dict->validate({name=>'Vincent', age=>15,extra=>'morethanIneed'}),
@@ -70,15 +70,15 @@ like $simple_dict->validate({name=>'Vincent', age=>15,extra=>'morethanIneed'}),
  my $optional_dict = subtype 'optional_dict', as Dict[name=>Str,age=>Optional[Int]];
  
  like $optional_tuple->validate({a=>1,b=>2}),
- qr/Validation failed for 'optional_tuple' failed with value { a: 1, b: 2 }/,
+ qr/Validation failed for 'optional_tuple' with value { a: 1, b: 2 }/,
  'Wrong basic type';
 
 like $optional_tuple->validate(['a','b']),
- qr/failed for 'Int' failed with value a/,
+ qr/failed for 'Int' with value a/,
  'Correctly failed due to "a" not an Int';
  
 like $optional_tuple->validate([1,$simple_tuple]),
- qr/failed for 'MooseX::Types::Structured::Optional\[Str\]' failed with value MooseX/,
+ qr/failed for 'MooseX::Types::Structured::Optional\[Str\]' with value MooseX/,
  'Correctly failed due to object not a Str';
 
 like $optional_tuple->validate([1,'hello','too many']),
@@ -86,15 +86,15 @@ like $optional_tuple->validate([1,'hello','too many']),
  'Too Many values';
 
 like $optional_dict->validate([1,2]),
- qr/ failed with value \[ 1, 2 \]/,
+ qr/ with value \[ 1, 2 \]/,
  'Wrong basic type';
  
 like $optional_dict->validate({name=>'John',age=>'a'}),
- qr/Validation failed for 'MooseX::Types::Structured::Optional\[Int\]' failed with value a/,
+ qr/Validation failed for 'MooseX::Types::Structured::Optional\[Int\]' with value a/,
  'Correctly failed due to age not an Int';
  
 like $optional_dict->validate({name=>$simple_dict,age=>1}),
- qr/failed with value { age: 1, name: MooseX:/,
+ qr/with value { age: 1, name: MooseX:/,
  'Correctly failed due to object not a Str';
 
 like $optional_dict->validate({name=>'Vincent', age=>15,extra=>'morethanIneed'}),

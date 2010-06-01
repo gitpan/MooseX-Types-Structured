@@ -1,8 +1,12 @@
 Revision history for MooseX-Types-Structured
 
+0.22   01 June 2010
+        - Added tests to demonstrate type constraint equality problem
+          introduced in Moose 1.05
+
 0.21   26 March 2010
         - Removed unneed module from test
-	- additional contributed documentation fixes
+        - additional contributed documentation fixes
 
 0.20   04 February 2010
         - Add a new Map type. (Ricardo SIGNES)

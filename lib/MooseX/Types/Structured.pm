@@ -11,7 +11,7 @@ use Sub::Exporter -setup => [ qw(Dict Map Tuple Optional slurpy) ];
 use Devel::PartialDump;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 our $AUTHORITY = 'cpan:JJNAPIORK';
 
 =head1 NAME

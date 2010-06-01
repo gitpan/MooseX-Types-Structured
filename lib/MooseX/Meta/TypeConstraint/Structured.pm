@@ -232,9 +232,7 @@ sub is_a_type_of {
 
 sub is_subtype_of {
     my ( $self, $type_or_name ) = @_;
-
     my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name);
-
     if ( $other->isa(__PACKAGE__) ) {
         if ( $other->type_constraints and $self->type_constraints ) {
             if ( $self->parent->is_a_type_of($other->parent) ) {
@@ -294,7 +292,8 @@ sub _type_constraints_op_all {
         $_ = Moose::Util::TypeConstraints::find_or_create_isa_type_constraint($_)
           for $self_type_constraint, $other_type_constraint;
 
-        $self_type_constraint->$op($other_type_constraint) or return;
+        my $result = $self_type_constraint->$op($other_type_constraint);
+        return unless $result;
     }
     
     return 1; ##If we get this far, everything is good.
