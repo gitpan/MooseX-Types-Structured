@@ -1,7 +1,7 @@
 BEGIN {
-	use strict;
-	use warnings;
-	use Test::More tests=>11;
+    use strict;
+    use warnings;
+    use Test::More tests=>11;
 }
 
 {
@@ -9,7 +9,7 @@ BEGIN {
     use MooseX::Types::Structured qw(Dict Tuple);
     use MooseX::Types::Moose qw(Int Str Item);
     use MooseX::Types -declare => [qw(
-        MyDict1 MyDict2  MyDict4 
+        MyDict1 MyDict2  MyDict4
     )];
 
     subtype MyDict1,

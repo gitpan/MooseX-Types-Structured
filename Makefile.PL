@@ -1,33 +1,67 @@
-use inc::Module::Install;
 
-## All the required meta information
-name 'MooseX-Types-Structured';
-all_from 'lib/MooseX/Types/Structured.pm';
-abstract 'Moose Type Constraint classes for Structured Types';
-author 'John Napiorkowski <jjnapiork@cpan.org>';
-license 'perl';
+use strict;
+use warnings;
 
-## Module dependencies
-requires 'Moose' => '1.06';
-requires 'MooseX::Types' => '0.22';
-requires 'Devel::PartialDump' => '0.10';
-requires 'Sub::Exporter' => '0.982';
+BEGIN { require 5.008; }
 
-## Testing dependencies
-build_requires 'Test::More' => '0.70';
-build_requires 'Test::Exception' => '0.27';
+use ExtUtils::MakeMaker 6.31;
 
-## Author tests dependencies
-author_requires 'Test::Pod' => '1.14';
-author_requires 'Test::Pod::Coverage' => '1.08';
 
-## Build README
-system 'pod2text lib/MooseX/Types/Structured.pm > README'
-    if -e 'MANIFEST.SKIP';
 
-## Instructions to Module::Install
-auto_install;
-tests_recursive;
-WriteAll;
+my %WriteMakefileArgs = (
+  'ABSTRACT' => 'MooseX::Types::Structured - Structured Type Constraints for Moose',
+  'AUTHOR' => 'John Napiorkowski <jjnapiork@cpan.org>, Florian Ragwitz <rafl@debian.org>, Yuval Kogman <nothingmuch@woobling.org>, Tomas Doran <bobtfish@bobtfish.net>',
+  'BUILD_REQUIRES' => {
+    'Data::Dumper' => '0',
+    'DateTime' => '0',
+    'MooseX::Types::DateTime' => '0',
+    'MooseX::Types::Moose' => '0',
+    'Test::Exception' => '0.27',
+    'Test::More' => '0.94'
+  },
+  'CONFIGURE_REQUIRES' => {
+    'ExtUtils::MakeMaker' => '6.31'
+  },
+  'DISTNAME' => 'MooseX-Types-Structured',
+  'EXE_FILES' => [],
+  'LICENSE' => 'perl',
+  'NAME' => 'MooseX::Types::Structured',
+  'PREREQ_PM' => {
+    'Devel::PartialDump' => '0.13',
+    'Moose' => '1.08',
+    'Moose::Meta::TypeCoercion' => '0',
+    'Moose::Meta::TypeConstraint' => '0',
+    'Moose::Meta::TypeConstraint::Parameterizable' => '0',
+    'Moose::Util::TypeConstraints' => '1.06',
+    'MooseX::Types' => '0.22',
+    'Scalar::Util' => '0',
+    'Sub::Exporter' => '0.982',
+    'overload' => '0'
+  },
+  'VERSION' => '0.23',
+  'test' => {
+    'TESTS' => 't/*.t t/regressions/*.t'
+  }
+);
 
-1;
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+

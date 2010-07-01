@@ -15,7 +15,7 @@ my $list_tc = MooseX::Meta::TypeConstraint::Structured->new(
     parent => $arrayref,
     type_constraints => [$int, $str],
     constraint_generator=> sub {
-        my @type_constraints = @{shift @_};            
+        my @type_constraints = @{shift @_};
         my @values = @{shift @_};
 
         while(my $type_constraint = shift @type_constraints) {

@@ -1,5 +1,12 @@
 Revision history for MooseX-Types-Structured
 
+0.23   01 july 2010
+        - Changes to the return value of ->validate that hopefully is both
+          backwardly compatible as well as more detailed.  Now if you have
+          a deeply recursive of repeated type constraints inside other
+          type constraints you will get a drill down report to show the
+          actual type constraint that failed
+
 0.22   01 June 2010
         - Added tests to demonstrate type constraint equality problem
           introduced in Moose 1.05
