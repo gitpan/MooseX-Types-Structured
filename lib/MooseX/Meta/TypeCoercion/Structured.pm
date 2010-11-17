@@ -4,7 +4,7 @@ BEGIN {
   $MooseX::Meta::TypeCoercion::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Meta::TypeCoercion::Structured::VERSION = '0.23';
+  $MooseX::Meta::TypeCoercion::Structured::VERSION = '0.24';
 }
 # ABSTRACT: MooseX::Meta::TypeCoercion::Structured - Coerce structured type constraints.
 
@@ -54,6 +54,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 

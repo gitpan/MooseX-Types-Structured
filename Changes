@@ -1,5 +1,8 @@
 Revision history for MooseX-Types-Structured
 
+0.24   16 November 2010
+        - Added some performance enhancing caching code (phaeton)
+
 0.23   01 july 2010
         - Changes to the return value of ->validate that hopefully is both
           backwardly compatible as well as more detailed.  Now if you have

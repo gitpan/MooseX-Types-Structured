@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker 6.31;
 
 my %WriteMakefileArgs = (
   'ABSTRACT' => 'MooseX::Types::Structured - Structured Type Constraints for Moose',
-  'AUTHOR' => 'John Napiorkowski <jjnapiork@cpan.org>, Florian Ragwitz <rafl@debian.org>, Yuval Kogman <nothingmuch@woobling.org>, Tomas Doran <bobtfish@bobtfish.net>',
+  'AUTHOR' => 'John Napiorkowski <jjnapiork@cpan.org>, Florian Ragwitz <rafl@debian.org>, Yuval Kogman <nothingmuch@woobling.org>, Tomas Doran <bobtfish@bobtfish.net>, Robert Sedlacek <rs@474.at>',
   'BUILD_REQUIRES' => {
     'Data::Dumper' => '0',
     'DateTime' => '0',
@@ -38,7 +38,7 @@ my %WriteMakefileArgs = (
     'Sub::Exporter' => '0.982',
     'overload' => '0'
   },
-  'VERSION' => '0.23',
+  'VERSION' => '0.24',
   'test' => {
     'TESTS' => 't/*.t t/regressions/*.t'
   }

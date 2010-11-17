@@ -4,7 +4,7 @@ BEGIN {
   $MooseX::Meta::TypeConstraint::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Meta::TypeConstraint::Structured::VERSION = '0.23';
+  $MooseX::Meta::TypeConstraint::Structured::VERSION = '0.24';
 }
 # ABSTRACT: MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
 
@@ -81,12 +81,7 @@ override 'validate' => sub {
 
 sub generate_constraint_for {
     my ($self, $type_constraints) = @_;
-    return sub {
-        my $arg =  shift @_;
-        my $constraint_generator = $self->constraint_generator;
-        my $result = $constraint_generator->($type_constraints, $arg, $_[0]);
-        return $result;
-    };
+    return $self->constraint_generator->($self, $type_constraints);
 }
 
 
@@ -376,6 +371,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 

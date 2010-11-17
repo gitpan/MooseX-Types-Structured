@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Meta::TypeCoercion::Structured::Optional::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Meta::TypeCoercion::Structured::Optional::VERSION = '0.23';
+  $MooseX::Meta::TypeCoercion::Structured::Optional::VERSION = '0.24';
 }
 
 use Moose;
@@ -63,6 +63,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 

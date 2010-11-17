@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::OverflowHandler::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::OverflowHandler::VERSION = '0.23';
+  $MooseX::Types::Structured::OverflowHandler::VERSION = '0.24';
 }
 
 use Moose;
@@ -65,6 +65,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 

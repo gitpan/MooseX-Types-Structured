@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::MessageStack::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::MessageStack::VERSION = '0.23';
+  $MooseX::Types::Structured::MessageStack::VERSION = '0.24';
 }
 use Moose;
 
@@ -74,6 +74,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 

@@ -46,7 +46,7 @@ BEGIN {
     has 'EqualLengthAttr' => (is=>'rw', isa=>EqualLength);
     has 'MoreLengthPleaseAttr' => (is=>'rw', isa=>MoreLengthPlease);
     has 'PersonalInfoAttr' => (is=>'rw', isa=>PersonalInfo);
-    has 'MorePersonalInfo' => (is=>'rw', isa=>MorePersonalInfo);
+    has 'MorePersonalInfoAttr' => (is=>'rw', isa=>MorePersonalInfo);
 }
 
 ## Instantiate a new test object
@@ -109,25 +109,25 @@ throws_ok sub {
 }, qr/Attribute \(PersonalInfoAttr\) does not pass the type constraint/
  => q{PersonalInfoAttr correctly fails name=>'John', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
 
-## Test MorePersonalInfo
+## Test MorePersonalInfoAttr
 
 lives_ok sub {
-    $obj->MorePersonalInfo({name=>'Johnnap', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
-} => 'Set MorePersonalInfo attribute without error 1';
+    $obj->MorePersonalInfoAttr({name=>'Johnnap', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
+} => 'Set MorePersonalInfoAttr attribute without error 1';
 
 throws_ok sub {
-    $obj->MorePersonalInfo({name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]});
-}, qr/Attribute \(MorePersonalInfo\) does not pass the type constraint/
- => q{MorePersonalInfo correctly fails name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]};
+    $obj->MorePersonalInfoAttr({name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]});
+}, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
+ => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]};
 
 throws_ok sub {
-    $obj->MorePersonalInfo({name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
-}, qr/Attribute \(MorePersonalInfo\) does not pass the type constraint/
- => q{MorePersonalInfo correctly fails name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
+    $obj->MorePersonalInfoAttr({name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
+}, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
+ => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
 
 throws_ok sub {
-    $obj->MorePersonalInfo({name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
-}, qr/Attribute \(MorePersonalInfo\) does not pass the type constraint/
- => q{MorePersonalInfo correctly fails name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
+    $obj->MorePersonalInfoAttr({name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
+}, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
+ => q{MorePersonalInfoAttr correctly fails name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
 
 

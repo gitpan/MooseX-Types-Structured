@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::VERSION = '0.23';
+  $MooseX::Types::Structured::VERSION = '0.24';
 }
 # ABSTRACT: MooseX::Types::Structured - Structured Type Constraints for Moose
 
@@ -43,6 +43,25 @@ my $Optional = MooseX::Meta::TypeConstraint::Structured::Optional->new(
     }
 );
 
+my $IsType = sub {
+    my ($obj, $type) = @_;
+
+    return $obj->can('equals')
+        ? $obj->equals($type)
+        : undef;
+};
+
+my $CompiledTC = sub {
+    my ($obj) = @_;
+
+    my $method = '_compiled_type_constraint';
+    return(
+          $obj->$IsType('Any')  ? undef
+        : $obj->can($method)    ? $obj->$method
+        :                         sub { $obj->check(shift) },
+    );
+};
+
 Moose::Util::TypeConstraints::register_type_constraint($Optional);
 Moose::Util::TypeConstraints::add_parameterizable_type($Optional);
 
@@ -52,7 +71,8 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
         parent => find_type_constraint('ArrayRef'),
         constraint_generator=> sub {
             ## Get the constraints and values to check
-            my ($type_constraints, $values) = @_;
+            my ($self, $type_constraints) = @_;
+            $type_constraints ||= $self->type_constraints;
             my @type_constraints = defined $type_constraints ?
              @$type_constraints : ();
 
@@ -62,50 +82,66 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
                 $overflow_handler = pop @type_constraints;
             }
 
-            my @values = defined $values ? @$values: ();
-            ## Perform the checking
-            while(@type_constraints) {
-                my $type_constraint = shift @type_constraints;
+            my (@checks, @optional, $o_check, $is_compiled);
+            return sub {
+                my ($values, $err) = @_;
+                my @values = defined $values ? @$values : ();
+
+                ## initialise on first time run
+                unless ($is_compiled) {
+                    @checks   = map { $_->$CompiledTC } @type_constraints;
+                    @optional = map { $_->is_subtype_of($Optional) } @type_constraints;
+                    $o_check  = $overflow_handler->$CompiledTC
+                        if $overflow_handler;
+                    $is_compiled++;
+                }
+
+                ## Perform the checking
+              VALUE:
+                for my $type_index (0 .. $#checks) {
+
+                    my $type_constraint = $checks[ $type_index ];
+
+                    if(@values) {
+                        my $value = shift @values;
+
+                        next VALUE
+                            unless $type_constraint;
+
+                        unless($type_constraint->($value)) {
+                            if($err) {
+                               my $message = $type_constraints[ $type_index ]->validate($value,$err);
+                               $err->add_message({message=>$message,level=>$err->level});
+                            }
+                            return;
+                        }
+                    } else {
+                        ## Test if the TC supports null values
+                        unless ($optional[ $type_index ]) {
+                            if($err) {
+                               my $message = $type_constraints[ $type_index ]->get_message('NULL',$err);
+                               $err->add_message({message=>$message,level=>$err->level});
+                            }
+                            return;
+                        }
+                    }
+                }
+
+                ## Make sure there are no leftovers.
                 if(@values) {
-                    my $value = shift @values;
-                    unless($type_constraint->check($value)) {
-                        if($_[2]) {
-                           my $message = $type_constraint->validate($value,$_[2]);
-                           $_[2]->add_message({message=>$message,level=>$_[2]->level});
+                    if($overflow_handler) {
+                        return $o_check->([@values], $err);
+                    } else {
+                        if($err) {
+                            my $message = "More values than Type Constraints!";
+                            $err->add_message({message=>$message,level=>$err->level});
                         }
                         return;
                     }
                 } else {
-                    ## Test if the TC supports null values
-                    unless ($type_constraint->is_subtype_of($Optional)) {
-                        if($_[2]) {
-                           my $message = $type_constraint->get_message('NULL',$_[2]);
-                           $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                        }
-                        return;
-                    }
+                    return 1;
                 }
-            }
-            ## Make sure there are no leftovers.
-            if(@values) {
-                if($overflow_handler) {
-                    return $overflow_handler->check([@values], $_[2]);
-                } else {
-                    if($_[2]) {
-                        my $message = "More values than Type Constraints!";
-                        $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                    }
-                    return;
-                }
-            } elsif(@type_constraints) {
-                if($_[2]) {
-                    my $message = "Not enough values for all defined type constraints.  Remaining: ". join(', ',@type_constraints);
-                    $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                }
-                return;
-            } else {
-                return 1;
-            }
+            };
         }
     )
 );
@@ -116,7 +152,8 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
         parent => find_type_constraint('HashRef'),
         constraint_generator => sub {
             ## Get the constraints and values to check
-            my ($type_constraints, $values) = @_;
+            my ($self, $type_constraints) = @_;
+            $type_constraints = $self->type_constraints;
             my @type_constraints = defined $type_constraints ?
              @$type_constraints : ();
 
@@ -126,51 +163,65 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
                 $overflow_handler = pop @type_constraints;
             }
             my (%type_constraints) = @type_constraints;
-            my %values = defined $values ? %$values: ();
-            ## Perform the checking
-            while(%type_constraints) {
-                my($key, $type_constraint) = each %type_constraints;
-                delete $type_constraints{$key};
-                if(exists $values{$key}) {
-                    my $value = $values{$key};
-                    delete $values{$key};
-                    unless($type_constraint->check($value)) {
-                        if($_[2]) {
-                            my $message = $type_constraint->validate($value,$_[2]);
-                            $_[2]->add_message({message=>$message,level=>$_[2]->level});
+
+            my (%check, %optional, $o_check, $is_compiled);
+            return sub {
+                my ($values, $err) = @_;
+                my %values = defined $values ? %$values: ();
+
+                unless ($is_compiled) {
+                    %check    = map { ($_ => $type_constraints{ $_ }->$CompiledTC) } keys %type_constraints;
+                    %optional = map { ($_ => $type_constraints{ $_ }->is_subtype_of($Optional)) } keys %type_constraints;
+                    $o_check  = $overflow_handler->$CompiledTC
+                        if $overflow_handler;
+                    $is_compiled++;
+                }
+
+                ## Perform the checking
+              KEY:
+                for my $key (keys %check) {
+                    my $type_constraint = $check{ $key };
+
+                    if(exists $values{$key}) {
+                        my $value = $values{$key};
+                        delete $values{$key};
+
+                        next KEY
+                            unless $type_constraint;
+
+                        unless($type_constraint->($value)) {
+                            if($err) {
+                                my $message = $type_constraints{ $key }->validate($value,$err);
+                                $err->add_message({message=>$message,level=>$err->level});
+                            }
+                            return;
+                        }
+                    } else {
+                        ## Test to see if the TC supports null values
+                        unless ($optional{ $key }) {
+                            if($err) {
+                               my $message = $type_constraints{ $key }->get_message('NULL',$err);
+                               $err->add_message({message=>$message,level=>$err->level});
+                            }
+                            return;
+                        }
+                    }
+                }
+
+                ## Make sure there are no leftovers.
+                if(%values) {
+                    if($overflow_handler) {
+                        return $o_check->(+{%values});
+                    } else {
+                        if($err) {
+                            my $message = "More values than Type Constraints!";
+                            $err->add_message({message=>$message,level=>$err->level});
                         }
                         return;
                     }
                 } else {
-                    ## Test to see if the TC supports null values
-                    unless ($type_constraint->is_subtype_of($Optional)) {
-                        if($_[2]) {
-                           my $message = $type_constraint->get_message('NULL',$_[2]);
-                           $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                        }
-                        return;
-                    }
+                    return 1;
                 }
-            }
-            ## Make sure there are no leftovers.
-            if(%values) {
-                if($overflow_handler) {
-                    return $overflow_handler->check(+{%values});
-                } else {
-                    if($_[2]) {
-                        my $message = "More values than Type Constraints!";
-                        $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                    }
-                    return;
-                }
-            } elsif(%type_constraints) {
-                if($_[2]) {
-                    my $message = "Not enough values for all defined type constraints.  Remaining: ". join(', ',@type_constraints);
-                    $_[2]->add_message({message=>$message,level=>$_[2]->level});
-                }
-                return;
-            } else {
-                return 1;
             }
         },
     )
@@ -182,7 +233,8 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
     parent => find_type_constraint('HashRef'),
     constraint_generator=> sub {
       ## Get the constraints and values to check
-      my ($type_constraints, $values) = @_;
+      my ($self, $type_constraints) = @_;
+      $type_constraints = $self->type_constraints;
       my @constraints = defined $type_constraints ? @$type_constraints : ();
 
       Carp::confess( "too many args for Map type" ) if @constraints > 2;
@@ -191,33 +243,44 @@ Moose::Util::TypeConstraints::get_type_constraint_registry->add_type_constraint(
                                   : @constraints == 1 ? (undef, @constraints)
                                   :                     ();
 
-      my %values = defined $values ? %$values: ();
-      ## Perform the checking
-      if ($value_type) {
-        for my $value (values %$values) {
-          unless ($value_type->check($value)) {
-            if($_[2]) {
-              my $message = $value_type->validate($value,$_[2]);
-              $_[2]->add_message({message=>$message,level=>$_[2]->level});
-            }
-            return;
-          }
-        }
-      }
+      my ($key_check, $value_check, $is_compiled);
+      return sub {
+          my ($values, $err) = @_;
+          my %values = defined $values ? %$values: ();
 
-      if ($key_type) {
-        for my $key (keys %$values) {
-          unless ($key_type->check($key)) {
-            if($_[2]) {
-              my $message = $key_type->validate($key,$_[2]);
-              $_[2]->add_message({message=>$message,level=>$_[2]->level});
-            }
-            return;
+          unless ($is_compiled) {
+              ($key_check, $value_check)
+                = map { $_ ? $_->$CompiledTC : undef }
+                      $key_type, $value_type;
+              $is_compiled++;
           }
-        }
-      }
 
-      return 1;
+          ## Perform the checking
+          if ($value_check) {
+            for my $value (values %$values) {
+              unless ($value_check->($value)) {
+                if($err) {
+                  my $message = $value_type->validate($value,$err);
+                  $err->add_message({message=>$message,level=>$err->level});
+                }
+                return;
+              }
+            }
+          }
+          if ($key_check) {
+            for my $key (keys %$values) {
+              unless ($key_check->($key)) {
+                if($err) {
+                  my $message = $key_type->validate($key,$err);
+                  $err->add_message({message=>$message,level=>$err->level});
+                }
+                return;
+              }
+            }
+          }
+
+          return 1;
+      };
     },
   )
 );
@@ -948,6 +1011,10 @@ Yuval Kogman <nothingmuch@woobling.org>
 =item *
 
 Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+Robert Sedlacek <rs@474.at>
 
 =back
 
