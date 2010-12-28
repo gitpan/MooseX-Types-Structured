@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::OverflowHandler::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::OverflowHandler::VERSION = '0.24';
+  $MooseX::Types::Structured::OverflowHandler::VERSION = '0.25';
 }
 
 use Moose;

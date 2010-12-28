@@ -2,7 +2,7 @@ BEGIN {
     use strict;
     use warnings;
     use Test::More tests=>16;
-    use Test::Exception;
+    use Test::Fatal;
 }
 
 {
@@ -59,75 +59,75 @@ isa_ok $obj => 'Test::MooseX::Meta::TypeConstraint::Structured::Advanced'
 
 ## Test EqualLengthAttr
 
-lives_ok sub {
+is( exception {
     $obj->EqualLengthAttr([[6,7,8],[9,10,11]]);
-} => 'Set EqualLengthAttr attribute without error';
+} => undef, 'Set EqualLengthAttr attribute without error');
 
-throws_ok sub {
+like( exception {
     $obj->EqualLengthAttr([1,'hello', 'test.xxx.test']);
 }, qr/Attribute \(EqualLengthAttr\) does not pass the type constraint/
- => q{EqualLengthAttr correctly fails [1,'hello', 'test.xxx.test']};
+ => q{EqualLengthAttr correctly fails [1,'hello', 'test.xxx.test']});
 
-throws_ok sub {
+like( exception {
     $obj->EqualLengthAttr([[6,7],[9,10,11]]);
 }, qr/Attribute \(EqualLengthAttr\) does not pass the type constraint/
- => q{EqualLengthAttr correctly fails [[6,7],[9,10,11]]};
+ => q{EqualLengthAttr correctly fails [[6,7],[9,10,11]]});
 
-throws_ok sub {
+like( exception {
     $obj->EqualLengthAttr([[6,7,1],[9,10,11]]);
 }, qr/Attribute \(EqualLengthAttr\) does not pass the type constraint/
- => q{EqualLengthAttr correctly fails [[6,7,1],[9,10,11]]};
+ => q{EqualLengthAttr correctly fails [[6,7,1],[9,10,11]]});
 
 ## Test MoreLengthPleaseAttr
 
-lives_ok sub {
+is( exception {
     $obj->MoreLengthPleaseAttr([[6,7,8,9,10],[11,12,13,14,15]]);
-} => 'Set MoreLengthPleaseAttr attribute without error';
+} => undef, 'Set MoreLengthPleaseAttr attribute without error');
 
-throws_ok sub {
+like( exception {
     $obj->MoreLengthPleaseAttr([[6,7,8,9],[11,12,13,14]]);
 }, qr/Attribute \(MoreLengthPleaseAttr\) does not pass the type constraint/
- => q{MoreLengthPleaseAttr correctly fails [[6,7,8,9],[11,12,13,14]]};
+ => q{MoreLengthPleaseAttr correctly fails [[6,7,8,9],[11,12,13,14]]});
 
 ## Test PersonalInfoAttr
 
-lives_ok sub {
+is( exception {
     $obj->PersonalInfoAttr({name=>'John', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
-} => 'Set PersonalInfoAttr attribute without error 1';
+} => undef, 'Set PersonalInfoAttr attribute without error 1');
 
-lives_ok sub {
+is( exception {
     $obj->PersonalInfoAttr({name=>'John', stats=>$obj});
-} => 'Set PersonalInfoAttr attribute without error 2';
+} => undef, 'Set PersonalInfoAttr attribute without error 2');
 
-throws_ok sub {
+like( exception {
     $obj->PersonalInfoAttr({name=>'John', stats=>[[6,7,8,9],[11,12,13,14]]});
 }, qr/Attribute \(PersonalInfoAttr\) does not pass the type constraint/
- => q{PersonalInfoAttr correctly fails name=>'John', stats=>[[6,7,8,9],[11,12,13,14]]};
+ => q{PersonalInfoAttr correctly fails name=>'John', stats=>[[6,7,8,9],[11,12,13,14]]});
 
-throws_ok sub {
+like( exception {
     $obj->PersonalInfoAttr({name=>'John', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 }, qr/Attribute \(PersonalInfoAttr\) does not pass the type constraint/
- => q{PersonalInfoAttr correctly fails name=>'John', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
+ => q{PersonalInfoAttr correctly fails name=>'John', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 
 ## Test MorePersonalInfoAttr
 
-lives_ok sub {
+is( exception {
     $obj->MorePersonalInfoAttr({name=>'Johnnap', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
-} => 'Set MorePersonalInfoAttr attribute without error 1';
+} => undef, 'Set MorePersonalInfoAttr attribute without error 1');
 
-throws_ok sub {
+like( exception {
     $obj->MorePersonalInfoAttr({name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]});
 }, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
- => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]};
+ => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', stats=>[[6,7,8,9],[11,12,13,14]]});
 
-throws_ok sub {
+like( exception {
     $obj->MorePersonalInfoAttr({name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 }, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
- => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
+ => q{MorePersonalInfoAttr correctly fails name=>'Johnnap', extra=>1, stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 
-throws_ok sub {
+like( exception {
     $obj->MorePersonalInfoAttr({name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 }, qr/Attribute \(MorePersonalInfoAttr\) does not pass the type constraint/
- => q{MorePersonalInfoAttr correctly fails name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]};
+ => q{MorePersonalInfoAttr correctly fails name=>'.bc', stats=>[[6,7,8,9,10],[11,12,13,14,15]]});
 
 

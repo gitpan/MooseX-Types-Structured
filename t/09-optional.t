@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::More tests=>46;
-use Test::Exception;
+use Test::Fatal;
 use Moose::Util::TypeConstraints;
 use MooseX::Types::Structured qw(Optional);
 
@@ -103,88 +103,88 @@ isa_ok $obj => 'Test::MooseX::Meta::TypeConstraint::Structured::Optional'
 
 # Test Insane
 
-lives_ok sub {
+is( exception {
     $obj->InsaneAttr([1,"hello",{name=>"John",age=>39,gender=>"male"},[1,2,3]]);
-} => 'Set InsaneAttr attribute without error [1,"hello",{name=>"John",age=>39,gender=>"male"},[1,2,3]]';
+} => undef, 'Set InsaneAttr attribute without error [1,"hello",{name=>"John",age=>39,gender=>"male"},[1,2,3]]');
 
-lives_ok sub {
+is( exception {
     $obj->InsaneAttr([1,$obj,{name=>"John",age=>39},[1,2,3]]);
-} => 'Set InsaneAttr attribute without error [1,$obj,{name=>"John",age=>39},[1,2,3]]';
+} => undef, 'Set InsaneAttr attribute without error [1,$obj,{name=>"John",age=>39},[1,2,3]]');
 
-lives_ok sub {
+is( exception {
     $obj->InsaneAttr([1,$obj,{name=>"John",age=>39}]);
-} => 'Set InsaneAttr attribute without error [1,$obj,{name=>"John",age=>39}]';
+} => undef, 'Set InsaneAttr attribute without error [1,$obj,{name=>"John",age=>39}]');
 
-throws_ok sub {
+like( exception {
     $obj->InsaneAttr([1,$obj,{name=>"John",age=>39},[qw/a b c/]]);
 }, qr/Attribute \(InsaneAttr\) does not pass the type constraint/
- => q{InsaneAttr correctly fails [1,$obj,{name=>"John",age=>39},[qw/a b c/]]};
+ => q{InsaneAttr correctly fails [1,$obj,{name=>"John",age=>39},[qw/a b c/]]});
 
-throws_ok sub {
+like( exception {
     $obj->InsaneAttr([1,"hello",{name=>"John",age=>39,gender=>undef},[1,2,3]]);
 }, qr/Attribute \(InsaneAttr\) does not pass the type constraint/
- => q{InsaneAttr correctly fails [1,"hello",{name=>"John",age=>39,gender=>undef},[1,2,3]]};
+ => q{InsaneAttr correctly fails [1,"hello",{name=>"John",age=>39,gender=>undef},[1,2,3]]});
 
 # Test TupleOptional1Attr
 
-lives_ok sub {
+is( exception {
     $obj->TupleOptional1Attr([1,10,"hello"]);
-} => 'Set TupleOptional1Attr attribute without error [1,10,"hello"]';
+} => undef, 'Set TupleOptional1Attr attribute without error [1,10,"hello"]');
 
-lives_ok sub {
+is( exception {
     $obj->TupleOptional1Attr([1,10,$obj]);
-} => 'Set TupleOptional1Attr attribute without error [1,10,$obj]';
+} => undef, 'Set TupleOptional1Attr attribute without error [1,10,$obj]');
 
-lives_ok sub {
+is( exception {
     $obj->TupleOptional1Attr([1,10]);
-} => 'Set TupleOptional1Attr attribute without error [1,10]';
+} => undef, 'Set TupleOptional1Attr attribute without error [1,10]');
 
-throws_ok sub {
+like( exception {
     $obj->TupleOptional1Attr([1,10,[1,2,3]]);
 }, qr/Attribute \(TupleOptional1Attr\) does not pass the type constraint/
- => q{TupleOptional1Attr correctly fails [1,10,[1,2,3]]};
+ => q{TupleOptional1Attr correctly fails [1,10,[1,2,3]]});
 
-throws_ok sub {
+like( exception {
     $obj->TupleOptional1Attr([1,10,undef]);
 }, qr/Attribute \(TupleOptional1Attr\) does not pass the type constraint/
- => q{TupleOptional1Attr correctly fails [1,10,undef]};
+ => q{TupleOptional1Attr correctly fails [1,10,undef]});
 
 # Test TupleOptional2Attr
 
-lives_ok sub {
+is( exception {
     $obj->TupleOptional2Attr([1,10,{key1=>1,key2=>$obj}]);
-} => 'Set TupleOptional2Attr attribute without error [1,10,{key1=>1,key2=>$obj}]';
+} => undef, 'Set TupleOptional2Attr attribute without error [1,10,{key1=>1,key2=>$obj}]');
 
-lives_ok sub {
+is( exception {
     $obj->TupleOptional2Attr([1,10]);
-} => 'Set TupleOptional2Attr attribute without error [1,10]';
+} => undef, 'Set TupleOptional2Attr attribute without error [1,10]');
 
-throws_ok sub {
+like( exception {
     $obj->TupleOptional2Attr([1,10,[1,2,3]]);
 }, qr/Attribute \(TupleOptional2Attr\) does not pass the type constraint/
- => q{TupleOptional2Attr correctly fails [1,10,[1,2,3]]};
+ => q{TupleOptional2Attr correctly fails [1,10,[1,2,3]]});
 
-throws_ok sub {
+like( exception {
     $obj->TupleOptional2Attr([1,10,undef]);
 }, qr/Attribute \(TupleOptional2Attr\) does not pass the type constraint/
- => q{TupleOptional2Attr correctly fails [1,10,undef]};
+ => q{TupleOptional2Attr correctly fails [1,10,undef]});
 
 # Test DictOptional1Attr: Dict[name=>Str, age=>Int, gender=>Optional[Gender]];
 
-lives_ok sub {
+is( exception {
     $obj->DictOptional1Attr({name=>"John",age=>39,gender=>"male"});
-} => 'Set DictOptional1Attr attribute without error {name=>"John",age=>39,gender=>"male"}';
+} => undef, 'Set DictOptional1Attr attribute without error {name=>"John",age=>39,gender=>"male"}');
 
-lives_ok sub {
+is( exception {
     $obj->DictOptional1Attr({name=>"Vanessa",age=>34});
-} => 'Set DictOptional1Attr attribute without error {name=>"Vanessa",age=>34}';
+} => undef, 'Set DictOptional1Attr attribute without error {name=>"Vanessa",age=>34}');
 
-throws_ok sub {
+like( exception {
     $obj->DictOptional1Attr({name=>"John",age=>39,gender=>undef});
 }, qr/Attribute \(DictOptional1Attr\) does not pass the type constraint/
- => q{TupleOptional2Attr correctly fails {name=>"John",age=>39,gender=>undef}};
+ => q{TupleOptional2Attr correctly fails {name=>"John",age=>39,gender=>undef}});
 
-throws_ok sub {
+like( exception {
     $obj->DictOptional1Attr({name=>"John",age=>39,gender=>"aaa"});
 }, qr/Attribute \(DictOptional1Attr\) does not pass the type constraint/
- => q{TupleOptional2Attr correctly fails {name=>"John",age=>39,gender=>"aaa"}};
+ => q{TupleOptional2Attr correctly fails {name=>"John",age=>39,gender=>"aaa"}});

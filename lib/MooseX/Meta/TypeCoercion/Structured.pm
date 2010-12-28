@@ -3,9 +3,6 @@ package ## Hide from PAUSE
 BEGIN {
   $MooseX::Meta::TypeCoercion::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
-BEGIN {
-  $MooseX::Meta::TypeCoercion::Structured::VERSION = '0.24';
-}
 # ABSTRACT: MooseX::Meta::TypeCoercion::Structured - Coerce structured type constraints.
 
 use Moose;

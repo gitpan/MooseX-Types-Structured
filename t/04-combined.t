@@ -2,7 +2,7 @@ BEGIN {
     use strict;
     use warnings;
     use Test::More tests=>9;
-    use Test::Exception;
+    use Test::Fatal;
 }
 
 {
@@ -26,35 +26,35 @@ isa_ok $record => 'Test::MooseX::Meta::TypeConstraint::Structured::Combined'
 
 ## Test dict_with_tuple
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple({key1=>'Hello', key2=>[1,'World']});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_tuple({key1=>'Hello', key2=>['World',2]});
 }, qr/Attribute \(dict_with_tuple\) does not pass the type constraint/
- => 'Threw error on bad constraint';
+ => 'Threw error on bad constraint');
 
 ## Test dict_with_tuple_with_union: Dict[key1=>'Str|Object', key2=>Tuple['Int','Str|Object']]
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>[1,'World']});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>['World',2]});
 }, qr/Attribute \(dict_with_tuple_with_union\) does not pass the type constraint/
- => 'Threw error on bad constraint';
+ => 'Threw error on bad constraint');
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>$record, key2=>[1,'World']});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>[1,$record]});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_tuple_with_union({key1=>1, key2=>['World',2]});
 }, qr/Attribute \(dict_with_tuple_with_union\) does not pass the type constraint/
- => 'Threw error on bad constraint';
+ => 'Threw error on bad constraint');

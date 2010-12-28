@@ -2,7 +2,7 @@ BEGIN {
     use strict;
     use warnings;
     use Test::More tests=>32;
-    use Test::Exception;
+    use Test::Fatal;
 }
 
 {
@@ -50,9 +50,9 @@ isa_ok $record => 'Test::MooseX::Meta::TypeConstraint::Structured::Tuple'
 
 ## Test Tuple type constraint
 
-lives_ok sub {
+is( exception {
     $record->tuple([1,'hello', 'test.abc.test']);
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
 is $record->tuple->[0], 1
  => 'correct set the tuple attribute index 0';
@@ -63,81 +63,81 @@ is $record->tuple->[1], 'hello'
 is $record->tuple->[2], 'test.abc.test'
  => 'correct set the tuple attribute index 2';
 
-throws_ok sub {
+like( exception {
     $record->tuple([1,'hello', 'test.xxx.test']);
 }, qr/Attribute \(tuple\) does not pass the type constraint/
- => 'Properly failed for bad value in custom type constraint';
+ => 'Properly failed for bad value in custom type constraint');
 
-throws_ok sub {
+like( exception {
     $record->tuple(['asdasd',2, 'test.abc.test']);
 }, qr/Attribute \(tuple\) does not pass the type constraint/
- => 'Got Expected Error for violating constraints';
+ => 'Got Expected Error for violating constraints');
 
 ## Test tuple_with_maybe
 
-lives_ok sub {
+is( exception {
     $record->tuple_with_maybe([1,'hello', 1, $record]);
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_maybe([1,'hello', 'a', $record]);
 }, qr/Attribute \(tuple_with_maybe\) does not pass the type constraint/
- => 'Properly failed for bad value parameterized constraint';
+ => 'Properly failed for bad value parameterized constraint');
 
-lives_ok sub {
+is( exception {
     $record->tuple_with_maybe([1,'hello',undef, $record]);
-} => 'Set tuple attribute without error skipping optional parameter';
+} => undef, 'Set tuple attribute without error skipping optional parameter');
 
 ## Test tuple_with_maybe2
 
-lives_ok sub {
+is( exception {
     $record->tuple_with_maybe2([1,'hello', 1]);
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_maybe2([1,'hello', 'a']);
 }, qr/Attribute \(tuple_with_maybe2\) does not pass the type constraint/
- => 'Properly failed for bad value parameterized constraint';
+ => 'Properly failed for bad value parameterized constraint');
 
-lives_ok sub {
+is( exception {
     $record->tuple_with_maybe2([1,'hello',undef]);
-} => 'Set tuple attribute without error skipping optional parameter';
+} => undef, 'Set tuple attribute without error skipping optional parameter');
 
 SKIP: {
     skip 'Core Maybe incorrectly allows null.', 1, 1;
-    throws_ok sub {
+    like( exception {
         $record->tuple_with_maybe2([1,'hello']);
     }, qr/Attribute \(tuple_with_maybe2\) does not pass the type constraint/
-     => 'Properly fails for missing maybe (needs to be at least undef)';
+     => 'Properly fails for missing maybe (needs to be at least undef)');
 }
 
 ## Test Tuple with parameterized type
 
-lives_ok sub {
+is( exception {
     $record->tuple_with_param([1,'hello', [1,2,3]]);
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_param([1,'hello', [qw/a b c/]]);
 }, qr/Attribute \(tuple_with_param\) does not pass the type constraint/
- => 'Properly failed for bad value parameterized constraint';
+ => 'Properly failed for bad value parameterized constraint');
 
 ## Test tuple2 (Tuple[Int,Str,Int])
 
 ok $record->tuple2([1,'hello',3])
  => "[1,'hello',3] properly suceeds";
 
-throws_ok sub {
+like( exception {
     $record->tuple2([1,2,'world']);
-}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "[1,2,'world'] properly fails";
+}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "[1,2,'world'] properly fails");
 
-throws_ok sub {
+like( exception {
     $record->tuple2(['hello1',2,3]);
-}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "['hello',2,3] properly fails";
+}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "['hello',2,3] properly fails");
 
-throws_ok sub {
+like( exception {
     $record->tuple2(['hello2',2,'world']);
-}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "['hello',2,'world'] properly fails";
+}, qr/Attribute \(tuple2\) does not pass the type constraint/ => "['hello',2,'world'] properly fails");
 
 
 ## Test tuple_with_parameterized (Tuple[Int,Str,Int,ArrayRef[Int]])
@@ -145,54 +145,54 @@ throws_ok sub {
 ok $record->tuple_with_parameterized([1,'hello',3,[1,2,3]])
  => "[1,'hello',3,[1,2,3]] properly suceeds";
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_parameterized([1,2,'world']);
 }, qr/Attribute \(tuple_with_parameterized\) does not pass the type constraint/
- => "[1,2,'world'] properly fails";
+ => "[1,2,'world'] properly fails");
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_parameterized(['hello1',2,3]);
 }, qr/Attribute \(tuple_with_parameterized\) does not pass the type constraint/
- => "['hello',2,3] properly fails";
+ => "['hello',2,3] properly fails");
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_parameterized(['hello2',2,'world']);
 }, qr/Attribute \(tuple_with_parameterized\) does not pass the type constraint/
- => "['hello',2,'world'] properly fails";
+ => "['hello',2,'world'] properly fails");
 
-throws_ok sub {
+like( exception {
     $record->tuple_with_parameterized([1,'hello',3,[1,2,'world']]);
 }, qr/Attribute \(tuple_with_parameterized\) does not pass the type constraint/
- => "[1,'hello',3,[1,2,'world']] properly fails";
+ => "[1,'hello',3,[1,2,'world']] properly fails");
 
 ## Test FiveByFiveAttr
 
-lives_ok sub {
+is( exception {
     $record->FiveByFiveAttr([6,[7,8,9]]);
-} => 'Set FiveByFiveAttr correctly';
+} => undef, 'Set FiveByFiveAttr correctly');
 
-throws_ok sub {
+like( exception {
     $record->FiveByFiveAttr([1,'hello', 'test']);
 }, qr/Attribute \(FiveByFiveAttr\) does not pass the type constraint/
- => q{Properly failed for bad value in FiveByFiveAttr [1,'hello', 'test']};
+ => q{Properly failed for bad value in FiveByFiveAttr [1,'hello', 'test']});
 
-throws_ok sub {
+like( exception {
     $record->FiveByFiveAttr([1,[8,9,10]]);
 }, qr/Attribute \(FiveByFiveAttr\) does not pass the type constraint/
- => q{Properly failed for bad value in FiveByFiveAttr [1,[8,9,10]]};
+ => q{Properly failed for bad value in FiveByFiveAttr [1,[8,9,10]]});
 
-throws_ok sub {
+like( exception {
     $record->FiveByFiveAttr([10,[11,12,0]]);
 }, qr/Attribute \(FiveByFiveAttr\) does not pass the type constraint/
- => q{Properly failed for bad value in FiveByFiveAttr [10,[11,12,0]]};
+ => q{Properly failed for bad value in FiveByFiveAttr [10,[11,12,0]]});
 
-throws_ok sub {
+like( exception {
     $record->FiveByFiveAttr([1,[1,1,0]]);
 }, qr/Attribute \(FiveByFiveAttr\) does not pass the type constraint/
- => q{Properly failed for bad value in FiveByFiveAttr [1,[1,1,0]]};
+ => q{Properly failed for bad value in FiveByFiveAttr [1,[1,1,0]]});
 
-throws_ok sub {
+like( exception {
     $record->FiveByFiveAttr([10,[11,12]]);
 }, qr/Attribute \(FiveByFiveAttr\) does not pass the type constraint/
- => q{Properly failed for bad value in FiveByFiveAttr [10,[11,12]};
+ => q{Properly failed for bad value in FiveByFiveAttr [10,[11,12]});
 

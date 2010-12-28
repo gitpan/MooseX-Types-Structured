@@ -3,9 +3,6 @@ package ## Hide from PAUSE
 BEGIN {
   $MooseX::Meta::TypeConstraint::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
-BEGIN {
-  $MooseX::Meta::TypeConstraint::Structured::VERSION = '0.24';
-}
 # ABSTRACT: MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
 
 use Moose;
@@ -139,7 +136,8 @@ around 'create_child_type' => sub {
 
 sub equals {
     my ( $self, $type_or_name ) = @_;
-    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name);
+    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name)
+      or return;
 
     return unless $other->isa(__PACKAGE__);
 
@@ -152,7 +150,8 @@ sub equals {
 
 sub is_a_type_of {
     my ( $self, $type_or_name ) = @_;
-    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name);
+    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name)
+      or return;
 
     if ( $other->isa(__PACKAGE__) and @{ $other->type_constraints || [] }) {
         if ( $self->parent->is_a_type_of($other->parent) ) {
@@ -170,7 +169,8 @@ sub is_a_type_of {
 
 sub is_subtype_of {
     my ( $self, $type_or_name ) = @_;
-    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name);
+    my $other = Moose::Util::TypeConstraints::find_type_constraint($type_or_name)
+      or return;
     if ( $other->isa(__PACKAGE__) ) {
         if ( $other->type_constraints and $self->type_constraints ) {
             if ( $self->parent->is_a_type_of($other->parent) ) {

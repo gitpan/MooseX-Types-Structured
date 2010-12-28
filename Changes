@@ -1,5 +1,14 @@
 Revision history for MooseX-Types-Structured
 
+0.25   28 December 2010
+        - fixed bug where ->is_subtype_of dies meaninglessly when the type we
+          are trying to check is not a type we can find.  This makes our
+          handling consistent with core Moose.  Also changed ->equals and
+          ->is_a_type_of to be consistent.
+        - Added test case for above
+        - The test suite now uses Test::Fatal instead of Test::Exception (Karen
+          Etheridge).
+
 0.24   16 November 2010
         - Added some performance enhancing caching code (phaeton)
 

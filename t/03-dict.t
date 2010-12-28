@@ -2,7 +2,7 @@ BEGIN {
     use strict;
     use warnings;
     use Test::More tests=>17;
-    use Test::Exception;
+    use Test::Fatal;
 }
 
 {
@@ -32,9 +32,9 @@ isa_ok $record => 'Test::MooseX::Meta::TypeConstraint::Structured::Dict'
 
 # Test dict Dict[name=>Str, age=>Int]
 
-lives_ok sub {
+is( exception {
     $record->dict({name=>'frith', age=>23});
-} => 'Set dict attribute without error';
+} => undef, 'Set dict attribute without error');
 
 is $record->dict->{name}, 'frith'
  => 'correct set the dict attribute name';
@@ -42,16 +42,16 @@ is $record->dict->{name}, 'frith'
 is $record->dict->{age}, 23
  => 'correct set the dict attribute age';
 
-throws_ok sub {
+like( exception {
     $record->dict({name=>[1,2,3], age=>'sdfsdfsd'});
 }, qr/Attribute \(dict\) does not pass the type constraint/
- => 'Got Expected Error for bad value in dict';
+ => 'Got Expected Error for bad value in dict');
 
 ## Test dict_with_maybe
 
-lives_ok sub {
+is( exception {
     $record->dict_with_maybe({name=>'frith', age=>23});
-} => 'Set dict attribute without error';
+} => undef, 'Set dict attribute without error');
 
 is $record->dict_with_maybe->{name}, 'frith'
  => 'correct set the dict attribute name';
@@ -59,40 +59,40 @@ is $record->dict_with_maybe->{name}, 'frith'
 is $record->dict_with_maybe->{age}, 23
  => 'correct set the dict attribute age';
 
-throws_ok sub {
+like( exception {
     $record->dict_with_maybe({name=>[1,2,3], age=>'sdfsdfsd'});
 }, qr/Attribute \(dict_with_maybe\) does not pass the type constraint/
- => 'Got Expected Error for bad value in dict';
+ => 'Got Expected Error for bad value in dict');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_maybe({age=>30});
 }, qr/Attribute \(dict_with_maybe\) does not pass the type constraint/
- => 'Got Expected Error for missing named parameter';
+ => 'Got Expected Error for missing named parameter');
 
-lives_ok sub {
+is( exception {
     $record->dict_with_maybe({name=>'usal', age=>undef});
-} => 'Set dict attribute without error, skipping maybe';
+} => undef, 'Set dict attribute without error, skipping maybe');
 
 ## Test dict_with_tuple_with_union: Dict[key1=>'Str|Object', key2=>Tuple['Int','Str|Object']]
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>[1,'World']});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>['World',2]});
 }, qr/Attribute \(dict_with_tuple_with_union\) does not pass the type constraint/
- => 'Threw error on bad constraint';
+ => 'Threw error on bad constraint');
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>$record, key2=>[1,'World']});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-lives_ok sub {
+is( exception {
     $record->dict_with_tuple_with_union({key1=>'Hello', key2=>[1,$record]});
-} => 'Set tuple attribute without error';
+} => undef, 'Set tuple attribute without error');
 
-throws_ok sub {
+like( exception {
     $record->dict_with_tuple_with_union({key1=>1, key2=>['World',2]});
 }, qr/Attribute \(dict_with_tuple_with_union\) does not pass the type constraint/
- => 'Threw error on bad constraint';
+ => 'Threw error on bad constraint');

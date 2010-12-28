@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Meta::TypeCoercion::Structured::Optional::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Meta::TypeCoercion::Structured::Optional::VERSION = '0.24';
+  $MooseX::Meta::TypeCoercion::Structured::Optional::VERSION = '0.25';
 }
 
 use Moose;

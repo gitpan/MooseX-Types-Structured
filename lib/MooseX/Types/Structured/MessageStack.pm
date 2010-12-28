@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::MessageStack::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::MessageStack::VERSION = '0.24';
+  $MooseX::Types::Structured::MessageStack::VERSION = '0.25';
 }
 use Moose;
 

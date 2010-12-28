@@ -16,7 +16,7 @@ my %WriteMakefileArgs = (
     'DateTime' => '0',
     'MooseX::Types::DateTime' => '0',
     'MooseX::Types::Moose' => '0',
-    'Test::Exception' => '0.27',
+    'Test::Fatal' => '0.003',
     'Test::More' => '0.94'
   },
   'CONFIGURE_REQUIRES' => {
@@ -38,7 +38,7 @@ my %WriteMakefileArgs = (
     'Sub::Exporter' => '0.982',
     'overload' => '0'
   },
-  'VERSION' => '0.24',
+  'VERSION' => '0.25',
   'test' => {
     'TESTS' => 't/*.t t/regressions/*.t'
   }
