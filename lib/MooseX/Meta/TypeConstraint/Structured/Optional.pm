@@ -1,9 +1,7 @@
-package MooseX::Meta::TypeConstraint::Structured::Optional;
+package ## Hide from PAUSE
+  MooseX::Meta::TypeConstraint::Structured::Optional;
 BEGIN {
   $MooseX::Meta::TypeConstraint::Structured::Optional::AUTHORITY = 'cpan:JJNAPIORK';
-}
-BEGIN {
-  $MooseX::Meta::TypeConstraint::Structured::Optional::VERSION = '0.25';
 }
 
 use Moose;
@@ -63,7 +61,7 @@ Robert Sedlacek <rs@474.at>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by John Napiorkowski.
+This software is copyright (c) 2011 by John Napiorkowski.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

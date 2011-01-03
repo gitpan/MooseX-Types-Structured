@@ -1,9 +1,7 @@
-package MooseX::Types::Structured::OverflowHandler;
+package ## Hide from PAUSE
+  MooseX::Types::Structured::OverflowHandler;
 BEGIN {
   $MooseX::Types::Structured::OverflowHandler::AUTHORITY = 'cpan:JJNAPIORK';
-}
-BEGIN {
-  $MooseX::Types::Structured::OverflowHandler::VERSION = '0.25';
 }
 
 use Moose;
@@ -74,7 +72,7 @@ Robert Sedlacek <rs@474.at>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by John Napiorkowski.
+This software is copyright (c) 2011 by John Napiorkowski.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

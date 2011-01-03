@@ -1,11 +1,11 @@
-package MooseX::Types::Structured::MessageStack;
+package ## Hide from PAUSE
+  MooseX::Types::Structured::MessageStack;
 BEGIN {
   $MooseX::Types::Structured::MessageStack::AUTHORITY = 'cpan:JJNAPIORK';
 }
-BEGIN {
-  $MooseX::Types::Structured::MessageStack::VERSION = '0.25';
-}
+
 use Moose;
+
 
 has 'level' => (
     traits => ['Counter'],
@@ -19,6 +19,7 @@ has 'level' => (
     },
 );
 
+
 has 'messages' => (
     traits => ['Array'],
     is => 'ro',
@@ -31,6 +32,7 @@ has 'messages' => (
         all_messages => 'elements',
     },
 );
+
 
 sub as_string {
     my @messages = (shift)->all_messages;
@@ -54,6 +56,16 @@ __END__
 =head1 NAME
 
 MooseX::Types::Structured::MessageStack
+
+=head1 ATTRIBUTES
+
+=head2 level
+
+=head2 messages
+
+=head1 METHODS
+
+=head2 as_string
 
 =head1 AUTHORS
 
@@ -83,7 +95,7 @@ Robert Sedlacek <rs@474.at>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by John Napiorkowski.
+This software is copyright (c) 2011 by John Napiorkowski.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
