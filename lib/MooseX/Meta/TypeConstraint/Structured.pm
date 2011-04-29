@@ -1,8 +1,5 @@
 package ## Hide from PAUSE
  MooseX::Meta::TypeConstraint::Structured;
-BEGIN {
-  $MooseX::Meta::TypeConstraint::Structured::AUTHORITY = 'cpan:JJNAPIORK';
-}
 # ABSTRACT: MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
 
 use Moose;

@@ -3,7 +3,7 @@ BEGIN {
   $MooseX::Types::Structured::AUTHORITY = 'cpan:JJNAPIORK';
 }
 BEGIN {
-  $MooseX::Types::Structured::VERSION = '0.26';
+  $MooseX::Types::Structured::VERSION = '0.27';
 }
 # ABSTRACT: MooseX::Types::Structured - Structured Type Constraints for Moose
 

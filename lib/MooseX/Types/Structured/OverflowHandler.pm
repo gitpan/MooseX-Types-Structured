@@ -1,8 +1,5 @@
 package ## Hide from PAUSE
   MooseX::Types::Structured::OverflowHandler;
-BEGIN {
-  $MooseX::Types::Structured::OverflowHandler::AUTHORITY = 'cpan:JJNAPIORK';
-}
 
 use Moose;
 

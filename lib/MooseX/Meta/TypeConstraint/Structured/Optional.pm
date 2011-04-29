@@ -1,8 +1,5 @@
 package ## Hide from PAUSE
   MooseX::Meta::TypeConstraint::Structured::Optional;
-BEGIN {
-  $MooseX::Meta::TypeConstraint::Structured::Optional::AUTHORITY = 'cpan:JJNAPIORK';
-}
 
 use Moose;
 use MooseX::Meta::TypeCoercion::Structured::Optional;

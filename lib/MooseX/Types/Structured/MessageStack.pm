@@ -1,8 +1,5 @@
 package ## Hide from PAUSE
   MooseX::Types::Structured::MessageStack;
-BEGIN {
-  $MooseX::Types::Structured::MessageStack::AUTHORITY = 'cpan:JJNAPIORK';
-}
 
 use Moose;
 

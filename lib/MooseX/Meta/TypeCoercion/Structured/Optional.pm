@@ -1,8 +1,5 @@
 package ## Hide from PAUSE
   MooseX::Meta::TypeCoercion::Structured::Optional;
-BEGIN {
-  $MooseX::Meta::TypeCoercion::Structured::Optional::AUTHORITY = 'cpan:JJNAPIORK';
-}
 
 use Moose;
 extends 'Moose::Meta::TypeCoercion';
