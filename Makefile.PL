@@ -2,45 +2,47 @@
 use strict;
 use warnings;
 
-BEGIN { require 5.008; }
+use 5.008;
 
-use ExtUtils::MakeMaker 6.31;
+use ExtUtils::MakeMaker 6.30;
 
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'MooseX::Types::Structured - Structured Type Constraints for Moose',
-  'AUTHOR' => 'John Napiorkowski <jjnapiork@cpan.org>, Florian Ragwitz <rafl@debian.org>, Yuval Kogman <nothingmuch@woobling.org>, Tomas Doran <bobtfish@bobtfish.net>, Robert Sedlacek <rs@474.at>',
-  'BUILD_REQUIRES' => {
-    'Data::Dumper' => '0',
-    'DateTime' => '0',
-    'MooseX::Types::DateTime' => '0',
-    'MooseX::Types::Moose' => '0',
-    'Test::Fatal' => '0',
-    'Test::More' => '0.94'
+  "ABSTRACT" => "MooseX::Types::Structured - Structured Type Constraints for Moose",
+  "AUTHOR" => "John Napiorkowski <jjnapiork\@cpan.org>, Florian Ragwitz <rafl\@debian.org>, Yuval Kogman <nothingmuch\@woobling.org>, Tomas Doran <bobtfish\@bobtfish.net>, Robert Sedlacek <rs\@474.at>",
+  "BUILD_REQUIRES" => {
+    "Data::Dumper" => 0,
+    "DateTime" => 0,
+    "MooseX::Types::DateTime" => 0,
+    "MooseX::Types::Moose" => 0,
+    "Test::Fatal" => 0,
+    "Test::More" => "0.94",
+    "strict" => 0,
+    "warnings" => 0
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.31'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'MooseX-Types-Structured',
-  'EXE_FILES' => [],
-  'LICENSE' => 'perl',
-  'NAME' => 'MooseX::Types::Structured',
-  'PREREQ_PM' => {
-    'Devel::PartialDump' => '0.13',
-    'Moose' => '1.08',
-    'Moose::Meta::TypeCoercion' => '0',
-    'Moose::Meta::TypeConstraint' => '0',
-    'Moose::Meta::TypeConstraint::Parameterizable' => '0',
-    'Moose::Util::TypeConstraints' => '1.06',
-    'MooseX::Types' => '0.22',
-    'Scalar::Util' => '0',
-    'Sub::Exporter' => '0.982',
-    'overload' => '0'
+  "DISTNAME" => "MooseX-Types-Structured",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "MooseX::Types::Structured",
+  "PREREQ_PM" => {
+    "Devel::PartialDump" => "0.13",
+    "Moose" => "1.08",
+    "Moose::Meta::TypeCoercion" => 0,
+    "Moose::Meta::TypeConstraint" => 0,
+    "Moose::Meta::TypeConstraint::Parameterizable" => 0,
+    "Moose::Util::TypeConstraints" => "1.06",
+    "MooseX::Types" => "0.22",
+    "Scalar::Util" => 0,
+    "Sub::Exporter" => "0.982",
+    "overload" => 0
   },
-  'VERSION' => '0.27',
-  'test' => {
-    'TESTS' => 't/*.t t/regressions/*.t'
+  "VERSION" => "0.28",
+  "test" => {
+    "TESTS" => "t/*.t t/regressions/*.t"
   }
 );
 
