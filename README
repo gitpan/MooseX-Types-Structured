@@ -1,11 +1,11 @@
 
 
 This archive contains the distribution MooseX-Types-Structured,
-version 0.28:
+version 0.29:
 
-  MooseX::Types::Structured - Structured Type Constraints for Moose
+  Structured Type Constraints for Moose
 
-This software is copyright (c) 2011 by John Napiorkowski.
+This software is copyright (c) 2008 by John Napiorkowski.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

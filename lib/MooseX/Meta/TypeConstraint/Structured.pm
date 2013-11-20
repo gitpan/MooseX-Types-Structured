@@ -1,6 +1,6 @@
 package ## Hide from PAUSE
  MooseX::Meta::TypeConstraint::Structured;
-# ABSTRACT: MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
+# ABSTRACT: Structured type constraints.
 
 use Moose;
 use Devel::PartialDump;
@@ -265,24 +265,32 @@ around 'get_message' => sub {
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 __END__
+
 =pod
 
-=encoding utf-8
+=encoding UTF-8
+
+=for :stopwords John Napiorkowski Florian Ragwitz יובל קוג'מן (Yuval Kogman) Tomas (t0m)
+Doran Robert Sedlacek subref parameterize servicable
 
 =head1 NAME
 
-MooseX::Meta::TypeConstraint::Structured - MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
+MooseX::Meta::TypeConstraint::Structured - Structured type constraints.
+
+=head1 VERSION
+
+version 0.29
 
 =head1 DESCRIPTION
 
 A structure is a set of L<Moose::Meta::TypeConstraint> that are 'aggregated' in
 such a way as that they are all applied to an incoming list of arguments.  The
-idea here is that a Type Constraint could be something like, "An Int followed by
-an Int and then a Str" and that this could be done so with a declaration like:
+idea here is that a Type Constraint could be something like, "An C<Int> followed by
+an C<Int> and then a C<Str>" and that this could be done so with a declaration like:
 
     Tuple[Int,Int,Str]; ## Example syntax
 
-So a structure is a list of Type constraints (the "Int,Int,Str" in the above
+So a structure is a list of type constraints (the C<Int,Int,Str> in the above
 example) which are intended to function together.
 
 =head1 ATTRIBUTES
@@ -293,14 +301,11 @@ A list of L<Moose::Meta::TypeConstraint> objects.
 
 =head2 constraint_generator
 
-A subref or closure that contains the way we validate incoming values against
-a set of type constraints.
-
 =head1 METHODS
 
 =head2 validate
 
-Messing with validate so that we can support niced error messages.
+Messing with validate so that we can support nicer error messages.
 
 =head2 generate_constraint_for ($type_constraints)
 
@@ -312,9 +317,6 @@ of values (to be passed at check time)
 Given a ref of type constraints, create a structured type.
 
 =head2 __infer_constraint_generator
-
-This returns a CODEREF which generates a suitable constraint generator.  Not
-user servicable, you'll never call this directly.
 
 =head2 compile_type_constraint
 
@@ -343,6 +345,12 @@ incoming deep value with L<Devel::PartialDump> and pass that on to either your
 custom error message or the default one.  In the future we'll try to provide a
 more complete stack trace of the actual offending elements
 
+A subref or closure that contains the way we validate incoming values against
+a set of type constraints.
+
+This returns a CODEREF which generates a suitable constraint generator.  Not
+user servicable, you'll never call this directly.
+
 =head1 SEE ALSO
 
 The following modules or resources may be of interest.
@@ -363,11 +371,11 @@ Florian Ragwitz <rafl@debian.org>
 
 =item *
 
-Yuval Kogman <nothingmuch@woobling.org>
+יובל קוג'מן (Yuval Kogman) <nothingmuch@woobling.org>
 
 =item *
 
-Tomas Doran <bobtfish@bobtfish.net>
+Tomas (t0m) Doran <bobtfish@bobtfish.net>
 
 =item *
 
@@ -377,10 +385,9 @@ Robert Sedlacek <rs@474.at>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by John Napiorkowski.
+This software is copyright (c) 2008 by John Napiorkowski.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

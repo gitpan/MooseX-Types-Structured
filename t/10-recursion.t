@@ -33,7 +33,7 @@ BEGIN {
     subtype Const() => as Int | Str;
     subtype Pair()  => as Tuple[ Expr, Expr ];
 
-    enum Op() => qw[ + - ];
+    enum Op() => [ qw[ + - ] ];
 
     subtype BinOp()  => as Tuple[ Expr, Op, Expr ];
     subtype Lambda() => as Tuple[ Var, Expr ];

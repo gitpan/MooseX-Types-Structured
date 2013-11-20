@@ -70,7 +70,7 @@ OBJECTTEST: {
      where { $_ > 5};
 
     enum Gender,
-     qw/male female transgendered/;
+     [ qw/male female transgendered/ ];
 
     subtype TupleOptional1() =>
         as Tuple[Int, MoreThanFive, Optional[Str|Object]];
