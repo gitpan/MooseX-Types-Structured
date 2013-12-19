@@ -1,5 +1,9 @@
 Revision history for MooseX-Types-Structured
 
+0.30      2013-12-19 22:51:17Z
+        - remove pod from internal and unindexed modules, for a prettier
+          metacpan release page
+
 0.29      2013-11-20 23:36:48Z
         - fixed use of an interface that was deprecated in Moose-2.1100
           (ether)

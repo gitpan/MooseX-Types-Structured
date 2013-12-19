@@ -1,10 +1,14 @@
 package ## Hide from PAUSE
  MooseX::Meta::TypeCoercion::Structured;
-# ABSTRACT: Coerce structured type constraints.
+# ABSTRACT: Coerce structured type constraints
 
 use Moose;
 extends 'Moose::Meta::TypeCoercion';
 
+# We need to make sure we can properly coerce the structure elements inside a
+# structured type constraint.  However requirements for the best way to allow
+# this are still in flux.  For now this class is a placeholder.
+# see also Moose::Meta::TypeCoercion.
 
 __PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
@@ -15,28 +19,16 @@ __END__
 =encoding UTF-8
 
 =for :stopwords John Napiorkowski Florian Ragwitz יובל קוג'מן (Yuval Kogman) Tomas (t0m)
-Doran Robert Sedlacek Ansgar 'phaylon' Stevan Little Yuval Kogman arcanez
-Burchardt Dave Rolsky Jesse Luehrs Karen Etheridge Ricardo Signes
+Doran Robert Sedlacek Ansgar 'phaylon' Stevan Little arcanez Burchardt Dave
+Rolsky Jesse Luehrs Karen Etheridge Ricardo Signes
 
 =head1 NAME
 
-MooseX::Meta::TypeCoercion::Structured - Coerce structured type constraints.
+MooseX::Meta::TypeCoercion::Structured - Coerce structured type constraints
 
 =head1 VERSION
 
-version 0.29
-
-=head1 DESCRIPTION
-
-We need to make sure we can properly coerce the structure elements inside a
-structured type constraint.  However requirements for the best way to allow
-this are still in flux.  For now this class is a placeholder.
-
-=head1 SEE ALSO
-
-The following modules or resources may be of interest.
-
-L<Moose>, L<Moose::Meta::TypeCoercion>
+version 0.30
 
 =head1 AUTHORS
 

@@ -4,7 +4,7 @@ MooseX::Types::Structured - Structured Type Constraints for Moose
 
 # VERSION
 
-version 0.29
+version 0.30
 
 # SYNOPSIS
 
@@ -99,7 +99,7 @@ Please see the test cases for more examples.
 
 # DESCRIPTION
 
-A structured type constraint is a standard container [Moose](http://search.cpan.org/perldoc?Moose) type constraint,
+A structured type constraint is a standard container [Moose](https://metacpan.org/pod/Moose) type constraint,
 such as an `ArrayRef` or `HashRef`, which has been enhanced to allow you to
 explicitly name all the allowed type constraints inside the structure.  The
 generalized form is:
@@ -107,10 +107,10 @@ generalized form is:
     TypeConstraint[@TypeParameters or %TypeParameters]
 
 Where `TypeParameters` is an array reference or hash references of
-[Moose::Meta::TypeConstraint](http://search.cpan.org/perldoc?Moose::Meta::TypeConstraint) objects.
+[Moose::Meta::TypeConstraint](https://metacpan.org/pod/Moose::Meta::TypeConstraint) objects.
 
 This type library enables structured type constraints. It is built on top of the
-[MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) library system, so you should review the documentation for that
+[MooseX::Types](https://metacpan.org/pod/MooseX::Types) library system, so you should review the documentation for that
 if you are not familiar with it.
 
 ## Comparing Parameterized types to Structured types
@@ -325,8 +325,8 @@ Or even:
         dob=>DateTime->new(year=>1969),
     });
 
-If you are not familiar with how coercions work, check out the [Moose](http://search.cpan.org/perldoc?Moose) cookbook
-entry [Moose::Cookbook::Recipe5](http://search.cpan.org/perldoc?Moose::Cookbook::Recipe5) for an explanation.  The section ["Coercions"](#Coercions)
+If you are not familiar with how coercions work, check out the [Moose](https://metacpan.org/pod/Moose) cookbook
+entry [Moose::Cookbook::Recipe5](https://metacpan.org/pod/Moose::Cookbook::Recipe5) for an explanation.  The section ["Coercions"](#coercions)
 has additional examples and discussion.
 
 ## Subtyping a Structured type constraint
@@ -404,7 +404,7 @@ mailing list.
 
 ## Recursion
 
-Newer versions of [MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) support recursive type constraints.  That is
+Newer versions of [MooseX::Types](https://metacpan.org/pod/MooseX::Types) support recursive type constraints.  That is
 you can include a type constraint as a contained type constraint of itself.  For
 example:
 
@@ -458,7 +458,7 @@ Which validates:
 
 Otherwise you will define a subtype that is impossible to validate since it is
 infinitely recursive.  For more information about defining recursive types,
-please see the documentation in [MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) and the test cases.
+please see the documentation in [MooseX::Types](https://metacpan.org/pod/MooseX::Types) and the test cases.
 
 # TYPE CONSTRAINTS
 
@@ -472,11 +472,11 @@ list of contained constraints.  For example:
     Tuple[Int,Str]; ## Validates [1,'hello']
     Tuple[Str|Object, Int]; ## Validates ['hello', 1] or [$object, 2]
 
-The Values of @constraints should ideally be [MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) declared type
-constraints.  We do support 'old style' [Moose](http://search.cpan.org/perldoc?Moose) string based constraints to a
+The Values of @constraints should ideally be [MooseX::Types](https://metacpan.org/pod/MooseX::Types) declared type
+constraints.  We do support 'old style' [Moose](https://metacpan.org/pod/Moose) string based constraints to a
 limited degree but these string type constraints are considered deprecated.
 There will be limited support for bugs resulting from mixing string and
-[MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) in your structures.  If you encounter such a bug and really
+[MooseX::Types](https://metacpan.org/pod/MooseX::Types) in your structures.  If you encounter such a bug and really
 need it fixed, we will required a detailed test case at the minimum.
 
 ## Dict\[%constraints\]
@@ -585,7 +585,7 @@ supported.
 # ERROR MESSAGES
 
 Error reporting has been improved to return more useful debugging messages. Now
-I will stringify the incoming check value with [Devel::PartialDump](http://search.cpan.org/perldoc?Devel::PartialDump) so that you
+I will stringify the incoming check value with [Devel::PartialDump](https://metacpan.org/pod/Devel::PartialDump) so that you
 can see the actual structure that is tripping up validation.  Also, I report the
 'internal' validation error, so that if a particular element inside the
 Structured Type is failing validation, you will see that.  There's a limit to
@@ -609,7 +609,7 @@ be found also in the 't/examples.t' test.  Your contributions are also welcomed.
 You need a hashref to conform to a canonical structure but are required accept a
 bunch of different incoming structures.  You can normalize using the `Dict` type
 constraint and coercions.  This example also shows structured types mixed which
-other [MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types) libraries.
+other [MooseX::Types](https://metacpan.org/pod/MooseX::Types) libraries.
 
     package Test::MooseX::Meta::TypeConstraint::Structured::Examples::Normalize;
 
@@ -691,8 +691,8 @@ clean and declarative way.
 
 The following modules or resources may be of interest.
 
-[Moose](http://search.cpan.org/perldoc?Moose), [MooseX::Types](http://search.cpan.org/perldoc?MooseX::Types), [Moose::Meta::TypeConstraint](http://search.cpan.org/perldoc?Moose::Meta::TypeConstraint),
-[MooseX::Meta::TypeConstraint::Structured](http://search.cpan.org/perldoc?MooseX::Meta::TypeConstraint::Structured)
+[Moose](https://metacpan.org/pod/Moose), [MooseX::Types](https://metacpan.org/pod/MooseX::Types), [Moose::Meta::TypeConstraint](https://metacpan.org/pod/Moose::Meta::TypeConstraint),
+[MooseX::Meta::TypeConstraint::Structured](https://metacpan.org/pod/MooseX::Meta::TypeConstraint::Structured)
 
 # AUTHORS
 
@@ -718,5 +718,4 @@ the same terms as the Perl 5 programming language system itself.
 - Ricardo Signes <rjbs@cpan.org>
 - Robert 'phaylon' Sedlacek <rs@474.at>
 - Stevan Little <stevan.little@iinteractive.com>
-- Yuval Kogman <nothingmuch@woobling.org>
 - arcanez <justin.d.hunter@gmail.com>

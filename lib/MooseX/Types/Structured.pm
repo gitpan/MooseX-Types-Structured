@@ -1,8 +1,8 @@
 package MooseX::Types::Structured;
 {
-  $MooseX::Types::Structured::VERSION = '0.29';
+  $MooseX::Types::Structured::VERSION = '0.30';
 }
-# git description: v0.28-9-g4a74c27
+# git description: v0.29-5-g1d33691
 
 BEGIN {
   $MooseX::Types::Structured::AUTHORITY = 'cpan:JJNAPIORK';
@@ -318,9 +318,8 @@ __END__
 =encoding UTF-8
 
 =for :stopwords John Napiorkowski Florian Ragwitz יובל קוג'מן (Yuval Kogman) Tomas (t0m)
-Doran Robert Sedlacek Ansgar 'phaylon' Stevan Little Yuval Kogman arcanez
-Burchardt Dave Rolsky Jesse Luehrs Karen Etheridge Ricardo Signes Subtyping
-slurpy
+Doran Robert Sedlacek Ansgar 'phaylon' Stevan Little arcanez Burchardt Dave
+Rolsky Jesse Luehrs Karen Etheridge Ricardo Signes Subtyping slurpy
 
 =head1 NAME
 
@@ -328,7 +327,7 @@ MooseX::Types::Structured - Structured Type Constraints for Moose
 
 =head1 VERSION
 
-version 0.29
+version 0.30
 
 =head1 SYNOPSIS
 
@@ -1082,10 +1081,6 @@ Robert 'phaylon' Sedlacek <rs@474.at>
 =item *
 
 Stevan Little <stevan.little@iinteractive.com>
-
-=item *
-
-Yuval Kogman <nothingmuch@woobling.org>
 
 =item *
 
